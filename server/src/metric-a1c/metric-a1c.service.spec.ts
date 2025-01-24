@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MatricA1cService } from './matric-a1c.service';
+import { MetricA1cService } from './metric-a1c.service';
 
-describe('MatricA1cService', () => {
-  let service: MatricA1cService;
+describe('MetricA1cService', () => {
+  let service: MetricA1cService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [MatricA1cService],
+      providers: [MetricA1cService],
     }).compile();
 
-    service = module.get<MatricA1cService>(MatricA1cService);
+    service = module.get<MetricA1cService>(MetricA1cService);
   });
 
   it('should be defined', () => {

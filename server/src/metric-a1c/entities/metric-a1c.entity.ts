@@ -2,7 +2,7 @@ import { Patient } from "src/patient/entities/patient.entity";
 import {  Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class MatricA1c {
+export class MetricA1c {
     @PrimaryGeneratedColumn()
     id:number;
 
@@ -15,7 +15,7 @@ export class MatricA1c {
     @Column({type:'integer'})
     patient_id:number
 
-    @ManyToOne(() => Patient, (patient) => patient.matricA1c , { onDelete: "CASCADE" })
+    @ManyToOne(() => Patient, (patient) => patient.metricA1c , { onDelete: "CASCADE" })
     @JoinColumn({ name: 'patient_id' }) 
     patient:Patient ;
 } 

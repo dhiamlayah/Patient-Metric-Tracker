@@ -1,10 +1,15 @@
 import { IsDate, IsNumber } from "class-validator";
 
-export class CreateMatricA1cDto {
+export class CreateMetricBloodPressureDto {
     @IsNumber()
-    value:number;
+    systolic:number;
+
+    @IsNumber()
+    diastolic:number;
+
     @IsDate()
     recorded_at:Date;
+    
     @IsNumber()
     patient_id;
 }

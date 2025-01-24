@@ -17,7 +17,6 @@ export class PatientService {
       console.log(`error from creation ${err.message}`)
       throw new InternalServerErrorException('Error creating patient')
     }
-
   }
 
   findAll() {
