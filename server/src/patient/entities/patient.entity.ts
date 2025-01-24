@@ -1,4 +1,5 @@
-import { AfterInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { MatricA1c } from "src/matric-a1c/entities/matric-a1c.entity";
+import {  Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Patient {
@@ -14,6 +15,7 @@ export class Patient {
     @Column({type:'varchar',length: 30})
     username:string;    
 
-
-
+    @OneToMany(() => MatricA1c, (matricA1c) => matricA1c.patient , { onDelete: "CASCADE" })
+    matricA1c:Patient ;
+  
 }

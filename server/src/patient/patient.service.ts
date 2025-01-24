@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,6 +15,7 @@ export class PatientService {
       return this.repo.save(user)
     }catch(err:any){
       console.log(`error from creation ${err.message}`)
+      throw new InternalServerErrorException('Error creating patient')
     }
 
   }
