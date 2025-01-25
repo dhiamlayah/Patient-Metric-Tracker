@@ -29,8 +29,8 @@ export class Patient {
   
   @OneToMany(
     () => MetricBloodPressure,
-    (marticBloodPressure) => marticBloodPressure.patient,
+    (merticBloodPressure) => merticBloodPressure.patient,
     { onDelete: 'CASCADE' },
   )
-  marticBloodPressure: MetricBloodPressure[];
+  metricBloodPressure: MetricBloodPressure[];
 }

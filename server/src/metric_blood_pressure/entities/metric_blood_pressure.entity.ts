@@ -24,7 +24,7 @@ export class MetricBloodPressure {
   @Column({ type: 'integer' }) 
   patient_id: number;
 
-  @ManyToOne(() => Patient, (patient) => patient.marticBloodPressure, {
+  @ManyToOne(() => Patient, (patient) => patient.metricBloodPressure, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'patient_id' })
