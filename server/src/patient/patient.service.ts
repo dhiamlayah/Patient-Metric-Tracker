@@ -22,15 +22,21 @@ export class PatientService {
     const patients = await this.repo.getPatientsWithMetrics()
     return patients
    }catch(err:any){
-    console.log(`error from geting patients : ${err.message}`)
+    console.log(`error from getting patients : ${err.message}`)
     throw new InternalServerErrorException('Error getting patients');
 
    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} patient`;
-  }
+  async findOne(id: number) {
+    try{
+      const patients = await this.repo.getSinglePatientWithMetrics(id)
+      return patients
+     }catch(err:any){
+      console.log(`error from getting single patient : ${err.message}`)
+      throw new InternalServerErrorException('Error getting signle patient');
+  
+     }  }
 
   update(id: number, updatePatientDto: UpdatePatientDto) {
     return `This action updates a #${id} patient`;

@@ -8,7 +8,8 @@ export class PatientRepository extends Repository<Patient> {
     super(Patient, dataSource.createEntityManager());
   }
 
-  async getPatientsWithMetrics(start: number = 0) {
+
+  private async joinThreeTable (){
     const selectFields = [
       'p.username',
       'ma.recorded_at',
@@ -17,22 +18,31 @@ export class PatientRepository extends Repository<Patient> {
       'mbp.diastolic',
       'mbp.recorded_at',
     ];
-
     const metricBloodPressureJoinCondition = `mbp.patient_id = p.id AND mbp.recorded_at = (select MAX(mbp2.recorded_at) FROM metric_blood_pressure AS mbp2 WHERE  mbp2.patient_id = p.id  ) or mbp.recorded_at is null  `;
 
     const metricA1cJoinCondition = `ma.patient_id = p.id AND ma.recorded_at = (select MAX(ma2.recorded_at) FROM metric_a1c AS ma2 WHERE  ma2.patient_id = p.id  ) or ma.recorded_at is null `;
 
-    const queryBuilder = this.createQueryBuilder('p');
-    await queryBuilder
+    const queryBuilder = await this.createQueryBuilder('p');
+    return await  queryBuilder
       .select(selectFields)
       .leftJoin('p.metricA1c', 'ma', metricA1cJoinCondition)
-      .leftJoin(
-        'p.metricBloodPressure',
-        'mbp',
-        metricBloodPressureJoinCondition,
-      )
-      .offset(start)
-      .limit(start + 10);
-    return queryBuilder.getManyAndCount();
+      .leftJoin('p.metricBloodPressure','mbp', metricBloodPressureJoinCondition)
+   
+  }
+
+  async getPatientsWithMetrics(start: number = 0) {
+    return (await this.joinThreeTable())
+    .offset(start)
+    .limit(start + 10)
+    .getManyAndCount()  
+  }
+
+
+  async getSinglePatientWithMetrics (id:number){
+
+    return (await this.joinThreeTable())
+    .where(`p.id=${id}`)
+    .getOne()
+
   }
 }
