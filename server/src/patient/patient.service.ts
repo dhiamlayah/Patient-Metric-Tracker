@@ -1,6 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
-import { UpdatePatientDto } from './dto/update-patient.dto';
 import { PatientRepository } from './patient.repository';
 
 @Injectable()
@@ -17,9 +16,9 @@ export class PatientService {
     }
   }
 
-  async findAll() {
+  async findAll(startFrom?:number) {
    try{
-    const patients = await this.repo.getPatientsWithMetrics()
+    const patients = await this.repo.getPatientsWithMetrics(startFrom)
     return patients
    }catch(err:any){
     console.log(`error from getting patients : ${err.message}`)
@@ -35,14 +34,14 @@ export class PatientService {
      }catch(err:any){
       console.log(`error from getting single patient : ${err.message}`)
       throw new InternalServerErrorException('Error getting signle patient');
-  
-     }  }
+     }
+   }
 
-  update(id: number, updatePatientDto: UpdatePatientDto) {
-    return `This action updates a #${id} patient`;
-  }
+  // update(id: number, updatePatientDto: UpdatePatientDto) {
+  //   return `This action updates a #${id} patient`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} patient`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} patient`;
+  // }
 }

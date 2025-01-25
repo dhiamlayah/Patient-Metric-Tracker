@@ -1,5 +1,5 @@
 import { Patient } from "src/patient/entities/patient.entity";
-import {  Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {  Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class MetricA1c {
@@ -10,6 +10,7 @@ export class MetricA1c {
     value:number
 
     @Column({type:'date', default:()=>'CURRENT_DATE' })
+    @Index('a1c_index')
     recorded_at:Date
 
     @Column({type:'integer'})

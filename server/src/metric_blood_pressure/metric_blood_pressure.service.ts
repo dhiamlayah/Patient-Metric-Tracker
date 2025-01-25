@@ -27,8 +27,9 @@ export class MetricBloodPressureService {
       );
     }
   }
+  
   async findOne(id: number) {
-    const metricBloodPressure = await this.repo.findOneBy({ id });
+    const metricBloodPressure = await this.repo.find({ where:{patient_id: id},order:{recorded_at:"DESC"} });
     if (!metricBloodPressure) {
       throw new NotFoundException(
         'metric blood pressure, Not Found check patient exist',
@@ -37,18 +38,14 @@ export class MetricBloodPressureService {
     return metricBloodPressure;
   }
 
-  findAll() {
-    return `This action returns all metricBloodPressure`;
-  }
+  // update(
+  //   id: number,
+  //   updateMetricBloodPressureDto: UpdateMetricBloodPressureDto,
+  // ) {
+  //   return `This action updates a #${id} metricBloodPressure`;
+  // }
 
-  update(
-    id: number,
-    updateMetricBloodPressureDto: UpdateMetricBloodPressureDto,
-  ) {
-    return `This action updates a #${id} metricBloodPressure`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} metricBloodPressure`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} metricBloodPressure`;
+  // }
 }

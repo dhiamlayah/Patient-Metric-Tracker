@@ -2,6 +2,7 @@ import { Patient } from 'src/patient/entities/patient.entity';
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -18,6 +19,7 @@ export class MetricBloodPressure {
   @Column({ type: 'numeric', nullable: false })
   diastolic: number;
 
+  @Index('blood_pressure_index')
   @Column({ type: 'date', default: () => 'CURRENT_DATE' })
   recorded_at: Date;
 

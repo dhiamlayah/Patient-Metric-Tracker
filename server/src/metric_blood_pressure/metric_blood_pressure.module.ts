@@ -9,4 +9,4 @@ import { MetricBloodPressure } from './entities/metric_blood_pressure.entity';
   controllers: [MetricBloodPressureController],
   providers: [MetricBloodPressureService],
 })
-export class MetricBloodPressureModule {}
+export class MetricBloodPressureModule { }

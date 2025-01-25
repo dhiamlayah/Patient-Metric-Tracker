@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
@@ -13,8 +13,8 @@ export class PatientController {
   }
 
   @Get()
-  findAll() {
-    return this.patientService.findAll();
+  findAll(@Query('startFrom') startFrom?:number) {
+    return this.patientService.findAll(startFrom);
   }
 
   @Get(':id')
@@ -22,13 +22,13 @@ export class PatientController {
     return this.patientService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto) {
-    return this.patientService.update(+id, updatePatientDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updatePatientDto: UpdatePatientDto) {
+  //   return this.patientService.update(+id, updatePatientDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.patientService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.patientService.remove(+id);
+  // }
 }

@@ -8,8 +8,7 @@ export class PatientRepository extends Repository<Patient> {
     super(Patient, dataSource.createEntityManager());
   }
 
-
-  private async joinThreeTable (){
+  private async joinThreeTables() {
     const selectFields = [
       'p.username',
       'ma.recorded_at',
@@ -23,26 +22,28 @@ export class PatientRepository extends Repository<Patient> {
     const metricA1cJoinCondition = `ma.patient_id = p.id AND ma.recorded_at = (select MAX(ma2.recorded_at) FROM metric_a1c AS ma2 WHERE  ma2.patient_id = p.id  ) or ma.recorded_at is null `;
 
     const queryBuilder = await this.createQueryBuilder('p');
-    return await  queryBuilder
+    return await queryBuilder
       .select(selectFields)
-      .leftJoin('p.metricA1c', 'ma', metricA1cJoinCondition)
-      .leftJoin('p.metricBloodPressure','mbp', metricBloodPressureJoinCondition)
-   
+      .leftJoin('p.metricA1c', 
+        'ma', 
+        metricA1cJoinCondition)
+      .leftJoin(
+        'p.metricBloodPressure',
+        'mbp',
+        metricBloodPressureJoinCondition,
+      );
   }
 
-  async getPatientsWithMetrics(start: number = 0) {
-    return (await this.joinThreeTable())
-    .offset(start)
-    .limit(start + 10)
-    .getManyAndCount()  
+  async getPatientsWithMetrics(startFrom: number = 0) {
+    return (await this.joinThreeTables())
+      .offset(startFrom)
+      .limit(startFrom + 10)
+      .getManyAndCount();
   }
 
-
-  async getSinglePatientWithMetrics (id:number){
-
-    return (await this.joinThreeTable())
+  async getSinglePatientWithMetrics(id: number) {
+    return (await this.joinThreeTables())
     .where(`p.id=${id}`)
-    .getOne()
-
+    .getOne();
   }
 }

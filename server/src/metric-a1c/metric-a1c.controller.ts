@@ -12,23 +12,23 @@ export class MetricA1cController {
     return this.metricA1cService.create(createMetricA1cDto);
   }
 
-  @Get()
-  findAll() {
-    return this.metricA1cService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.metricA1cService.findAll();
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.metricA1cService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMetricA1cDto: UpdateMetricA1cDto) {
-    return this.metricA1cService.update(+id, updateMetricA1cDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateMetricA1cDto: UpdateMetricA1cDto) {
+  //   return this.metricA1cService.update(+id, updateMetricA1cDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.metricA1cService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.metricA1cService.remove(+id);
+  // }
 }

@@ -26,22 +26,22 @@ export class MetricA1cService {
   }
   
   async findOne(id: number) {
-    const metricA1c = await this.repo.findOneBy({ id });
+    const metricA1c = await this.repo.find({ where:{patient_id: id},order:{recorded_at:"DESC"} });
     if (!metricA1c) {
       throw new NotFoundException('metric a1c Not Found, check patient exist');
     }
     return metricA1c;
   }
 
-  update(id: number, updateMetricA1cDto: UpdateMetricA1cDto) {
-    return `This action updates a #${id} metricA1c`;
-  }
+  // update(id: number, updateMetricA1cDto: UpdateMetricA1cDto) {
+  //   return `This action updates a #${id} metricA1c`;
+  // }
 
-  findAll() {
-    return `This action returns all metricA1c`;
-  }
+  // findAll() {
+  //   return `This action returns all metricA1c`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} metricA1c`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} metricA1c`;
+  // }
 }
