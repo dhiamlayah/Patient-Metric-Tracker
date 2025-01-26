@@ -26,7 +26,7 @@ export class MetricA1cService {
   }
   
   async findOne(id: number) {
-    const metricA1c = await this.repo.find({ where:{patient_id: id},order:{recorded_at:"DESC"} });
+    const metricA1c = await this.repo.find({ where:{patient_id: id},order:{recorded_at:"asc"} });
     if (!metricA1c) {
       throw new NotFoundException('metric a1c Not Found, check patient exist');
     }

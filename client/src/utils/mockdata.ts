@@ -22,7 +22,6 @@ export const generateMockData = (days:any) => {
 export const mockData = generateMockData(30)
 
 export const getCurrentMetrics = () => {
-  const latest = mockData[mockData.length - 1]
   return [
     { name: "Patient", value: "dhia", change: "+5%" },
     { name: "Blood Pressure", value: "5", change: "+2.5%" },
