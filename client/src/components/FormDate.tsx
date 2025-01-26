@@ -4,13 +4,13 @@ import {
   PatientMetricBloodPressure,
 } from "../CustomInterfaces";
 
-const FormDate = ({ setData }: any) => {
+const FormDate = ({ setData ,data}: any) => {
   return (
     <Form.Group className="mb-3">
       <Form.Label>RECORDED AT :</Form.Label>
       <Form.Control
         type="date"
-        value={setData.recorded_at.toString()}
+        value={data.recorded_at.toString()}
         onChange={(e) =>
             setData((prev: PatientMetricBloodPressure| PatientMetricA1c) => {
             return { ...prev, recorded_at: e.target.value };

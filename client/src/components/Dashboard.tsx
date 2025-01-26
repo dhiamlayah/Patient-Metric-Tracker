@@ -118,7 +118,7 @@ function Dashboard() {
         <UpdateBP handleShowUpdate={handleShowUpdate} showBP={showBP} patientId={patientId} setRerender={setRerender}/>
       )}
       {showA1c && (
-        <UpdateA1c handleShowUpdate={handleShowUpdate} showA1c={showA1c} patientId={patientId} />
+        <UpdateA1c handleShowUpdate={handleShowUpdate} showA1c={showA1c} patientId={patientId} setRerender={setRerender}/>
       )}
     </GlobalUpdateContext.Provider>
   );

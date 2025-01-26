@@ -3,16 +3,12 @@ import { PatientMetricA1c } from "../CustomInterfaces";
 
 export const createMetricA1c = async (
   patientMetricA1c: PatientMetricA1c
-): Promise<void> => {
-  try {
-    const response: AxiosResponse<PatientMetricA1c> = await axios.post(
-      "http://localhost:3000/metric-a1c",
-      patientMetricA1c
-    );
-    console.log(response.data);
-  } catch (err) {
-    console.log("Error:", err);
-  }
+): Promise<PatientMetricA1c> => {
+  const response: AxiosResponse<PatientMetricA1c> = await axios.post(
+    "http://localhost:3000/metric-a1c",
+    patientMetricA1c
+  );
+  return response.data;
 };
 
 export const getAllPatientA1c = async (

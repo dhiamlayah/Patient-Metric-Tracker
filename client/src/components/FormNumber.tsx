@@ -1,7 +1,7 @@
 import Form from "react-bootstrap/Form";
 import { PatientMetricA1c, PatientMetricBloodPressure } from "../CustomInterfaces";
 
-const FormEntity = ({setData,name}:any) => {
+const FormNumber = ({setData,name}:any) => {
     return ( 
         <Form.Group className="mb-3">
         <Form.Label>{name.toUpperCase()}</Form.Label>
@@ -20,4 +20,4 @@ const FormEntity = ({setData,name}:any) => {
      );
 }
  
-export default FormEntity;
+export default FormNumber;

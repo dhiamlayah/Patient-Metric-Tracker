@@ -5,8 +5,8 @@ import { useState } from "react";
 import { PatientMetricBloodPressure } from "../CustomInterfaces";
 import { Alert } from "react-bootstrap";
 import ModalEntity from "./ModalEntity";
-import FormEntity from "./FormNumber";
 import FormDate from "./FormDate";
+import FormNumber from "./FormNumber";
 
 function UpdateBP({ handleShowUpdate, showBP, patientId, setRerender }: any) {
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
@@ -54,9 +54,9 @@ function UpdateBP({ handleShowUpdate, showBP, patientId, setRerender }: any) {
       >
         <Modal.Body>
           <Form>
-            <FormEntity setData={setNewBloodPressure} name="systolic" />
-            <FormEntity setData={setNewBloodPressure} name="diastolic" />
-            <FormDate setData={setNewBloodPressure} />
+            <FormNumber setData={setNewBloodPressure} name="systolic" />
+            <FormNumber setData={setNewBloodPressure} name="diastolic" />
+            <FormDate setData={setNewBloodPressure} data={newBloodPressure}/>
             {successMessage && (
               <Alert variant="success">{successMessage}</Alert>
             )}
