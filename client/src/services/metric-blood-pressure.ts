@@ -3,18 +3,16 @@ import { PatientMetricBloodPressure } from "../CustomInterfaces";
 
 export const createMetricBloodPressure = async (
   patientMetricBloodPressur: PatientMetricBloodPressure
-): Promise<void> => {
-  try {
+): Promise<PatientMetricBloodPressure> => {
     const response: AxiosResponse<PatientMetricBloodPressure> =
       await axios.post(
         "http://localhost:3000/metric-blood-pressure",
         patientMetricBloodPressur
       );
-    console.log(response.data);
-  } catch (err) {
-    console.log("Error:", err);
-  }
+    return response.data
 };
+
+
 
 export const getAllPatientBloodPressure = async (
   id: string

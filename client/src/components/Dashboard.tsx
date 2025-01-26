@@ -1,5 +1,5 @@
 import { Container, Row, Col } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { getAllPatientA1c } from "../services/metric-a1c";
 import { getPatient } from "../services/patients";
@@ -12,16 +12,36 @@ import {
   PatientMetricA1c,
   PatientMetricBloodPressure,
 } from "../CustomInterfaces";
+import UpdateA1c from "./UpdateA1c";
+import UpdateBP from "./updateBP";
+
+export const GlobalUpdateContext = createContext({
+  handleShowUpdate: (name: string) => {}
+});
 
 function Dashboard() {
-  const [patientMetricA1c, setPatientMetricA1C] =
-    useState<PatientMetricA1c[]>();
-  const [patientMetricBP, setPatientMetricBP] =
-    useState<PatientMetricBloodPressure[]>();
+  const [rerender,setRerender]=useState(false)    // this will rerender the data each time we add new values
+  const [showA1c, setShowA1c] = useState(false);  //open box modal to add new A1C measure
+  const [showBP, setShowBP] = useState(false);    //open box modal to add new blood pressure measure
+  const [patientMetricA1c, setPatientMetricA1C] =useState<PatientMetricA1c[]>();
+  const [patientMetricBP, setPatientMetricBP] =useState<PatientMetricBloodPressure[]>();
   const [patient, setPatient] = useState<Patient>();
 
   const params = useParams();
   const patientId = params.id;
+
+  const handleShowUpdate = (name: string) => {
+    if(name === "A1c"){
+      setShowA1c(true) 
+      setShowBP(false)}
+    else if (name=="BP"){
+      setShowA1c(false) 
+      setShowBP(true)
+    }else{
+      setShowA1c(false) 
+      setShowBP(false)
+    }
+  };
 
   // send a request to get A1C historyc
   const fetchPatientA1cData = async (id: string) => {
@@ -64,34 +84,43 @@ function Dashboard() {
       fetchPatientA1cData(patientId);
       fetchPatientBloodPressurData(patientId);
     }
-  }, [patientId]);
+  }, [patientId,rerender]);
 
   return (
-    <Container className="mt-4">
-          <h1  className="mb-4">Patient Metric Tracker</h1>
+    <GlobalUpdateContext.Provider value={{ handleShowUpdate }}>
+      <Container className="mt-4">
+        <h1 className="mb-4">Patient Metric Tracker</h1>
 
-      {patient && (
+        {patient && (
+          <Row>
+            <AllMetricCard patient={patient} />
+          </Row>
+        )}
+
         <Row>
-          <AllMetricCard patient={patient} />
+          <AllTrendChart
+            patientMetricBP={patientMetricBP}
+            patientMetricA1c={patientMetricA1c}
+          />
         </Row>
+
+        <Row>
+          <Col key={1} md={6}>
+            <MetricsTable name="Blood Pressur" data={patientMetricBP} />
+          </Col>
+          <Col key={2} md={4}>
+            <MetricsTable name="A1C" data={patientMetricA1c} />
+          </Col>
+        </Row>
+      </Container>
+   
+      {showBP && (
+        <UpdateBP handleShowUpdate={handleShowUpdate} showBP={showBP} patientId={patientId} setRerender={setRerender}/>
       )}
-
-      <Row>
-        <AllTrendChart
-          patientMetricBP={patientMetricBP}
-          patientMetricA1c={patientMetricA1c}
-        />
-      </Row>
-
-      <Row>
-        <Col key={1} md={6}>
-          <MetricsTable name="Blood Pressur" data={patientMetricBP} />
-        </Col>
-        <Col key={2} md={4}>
-          <MetricsTable name="A1C" data={patientMetricA1c} />
-        </Col>
-      </Row>
-    </Container>
+      {showA1c && (
+        <UpdateA1c handleShowUpdate={handleShowUpdate} showA1c={showA1c} patientId={patientId} />
+      )}
+    </GlobalUpdateContext.Provider>
   );
 }
 

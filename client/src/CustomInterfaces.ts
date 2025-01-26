@@ -1,15 +1,17 @@
 export interface PatientMetricA1c {
-    id: number;
+    id?: number;
     value: number;
-    recorded_at: Date;
+    recorded_at: Date | string;
+    patient_id?:number
   }
 
   
 export interface PatientMetricBloodPressure {
-  id: number;
+  id?: number;
   systolic: number;
   diastolic: number;
-  recorded_at: Date;
+  recorded_at: Date | string;
+  patient_id?:number
 }
 
 
