@@ -1,5 +1,5 @@
 import { Card } from "react-bootstrap"
-// import { ArrowUp, ArrowDown } from "react-bootstrap-icons"
+import { ClipboardPlus } from 'react-bootstrap-icons';
 
 function MetricCard({ name, value, change }:any) {
 
@@ -8,6 +8,7 @@ function MetricCard({ name, value, change }:any) {
       <Card.Body>
         <div className="d-flex justify-content-between align-items-center mb-2">
           <Card.Title className="h6 text-muted">{name}</Card.Title>
+          {name!="Patient" && <ClipboardPlus style={{cursor:'alias'}} />}
         </div>
         <div className="h3 mb-0">{value}</div>
         <small className={ "text-danger"}>{change}</small>
@@ -17,4 +18,3 @@ function MetricCard({ name, value, change }:any) {
 }
 
 export default MetricCard
-
