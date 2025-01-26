@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { PatientRepository } from './patient.repository';
 
@@ -21,20 +21,16 @@ export class PatientService {
     const patients = await this.repo.getPatientsWithMetrics(startFrom)
     return patients
    }catch(err:any){
-    console.log(`error from getting patients : ${err.message}`)
     throw new InternalServerErrorException('Error getting patients');
-
    }
   }
 
   async findOne(id: number) {
-    try{
-      const patients = await this.repo.getSinglePatientWithMetrics(id)
-      return patients
-     }catch(err:any){
-      console.log(`error from getting single patient : ${err.message}`)
-      throw new InternalServerErrorException('Error getting signle patient');
-     }
+      const patient = await this.repo.getSinglePatientWithMetrics(id)
+      if(!patient){
+        throw new NotFoundException('Patient Not Found')}
+      return patient
+     
    }
 
   // update(id: number, updatePatientDto: UpdatePatientDto) {

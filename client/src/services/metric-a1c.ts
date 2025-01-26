@@ -1,8 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { PatientMetricA1c } from "../CustomInterfaces";
 
-
-
 export const createMetricA1c = async (
   patientMetricA1c: PatientMetricA1c
 ): Promise<void> => {
@@ -17,13 +15,11 @@ export const createMetricA1c = async (
   }
 };
 
-export const getAllPatientA1c = async (id: number): Promise< PatientMetricA1c[] | void  > => {
-  try {
-    const response: AxiosResponse<PatientMetricA1c[]> = await axios.get(
-      `http://localhost:3000/metric-a1c/${id}`
-    )
-    return response.data
-} catch (err: any) {
-    console.error(`error in getAllPatientA1c  ${err.message}`);
-  }
+export const getAllPatientA1c = async (
+  id: string
+): Promise<PatientMetricA1c[]> => {
+  const response: AxiosResponse<PatientMetricA1c[]> = await axios.get(
+    `http://localhost:3000/metric-a1c/${id}`
+  );
+  return response.data;
 };

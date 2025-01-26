@@ -14,14 +14,9 @@ export const getPatients = async () => {
   }
 };
 
-export const getPatient = async (id: number) => {
-  try {
+export const getPatient = async (id: string): Promise<Patient>  => {
     const response: AxiosResponse<Patient> = await axios.get(
       `http://localhost:3000/patient/${id}`
     );
-    console.log(response.data);
     return response.data;
-  } catch (err) {
-    console.log("Error:", err);
-  }
 };
