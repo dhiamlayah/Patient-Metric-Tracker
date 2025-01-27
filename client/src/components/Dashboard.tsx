@@ -21,9 +21,11 @@ export const GlobalUpdateContext = createContext({
 
 function Dashboard() {
   const [rerender,setRerender]=useState(false)    // this will rerender the data each time we add new values
+  const [getMoreA1C,setGetMoreA1C]=useState(false)    // this will rerender the data each time we add new values
   const [showA1c, setShowA1c] = useState(false);  //open box modal to add new A1C measure
   const [showBP, setShowBP] = useState(false);    //open box modal to add new blood pressure measure
-  const [patientMetricA1c, setPatientMetricA1C] =useState<PatientMetricA1c[]>();
+  const [nbrA1c,setNbrA1C]=useState<number>(0)
+  const [patientMetricA1c, setPatientMetricA1C] =useState<PatientMetricA1c[]>([]);
   const [patientMetricBP, setPatientMetricBP] =useState<PatientMetricBloodPressure[]>();
   const [patient, setPatient] = useState<Patient>();
 
@@ -45,10 +47,17 @@ function Dashboard() {
   };
 
   // send a request to get A1C historyc
-  const fetchPatientA1cData = async (id: string) => {
+  const fetchPatientA1cData = async (id: string,skip?:number) => {
     try {
-      const allPatientAtc = await getAllPatientA1c(id);
-      setPatientMetricA1C(allPatientAtc);
+      if(!skip){
+        const allPatientAtc = await getAllPatientA1c(id);
+        setNbrA1C(allPatientAtc[1])
+        setPatientMetricA1C(allPatientAtc[0]);
+      }else{
+        const addMorePatientAtc = await getAllPatientA1c(id,skip);
+        console.log('add more patient',addMorePatientAtc)
+        setPatientMetricA1C((prev)=>{return [...prev,...addMorePatientAtc[0]]})
+      }
     } catch (error: any) {
       console.error(`Error From Server ${error?.message}`); 
     }
@@ -87,6 +96,14 @@ function Dashboard() {
     }
   }, [patientId,rerender]);
 
+
+  useEffect(()=>{
+    if (patientId) {
+      const skip = patientMetricA1c.length
+      fetchPatientA1cData(patientId,skip);
+    }
+  },[getMoreA1C])
+
   return (
     <GlobalUpdateContext.Provider value={{ handleShowUpdate }}>
       <Container className="mt-4">
@@ -107,10 +124,10 @@ function Dashboard() {
 
         <Row>
           <Col key={1} md={6}>
-            <MetricsTable name="Blood Pressur" data={patientMetricBP} />
+            {/* <MetricsTable name="Blood Pressur" data={patientMetricBP} nbrData={nbrA1c} /> */}
           </Col>
           <Col key={2} md={4}>
-            <MetricsTable name="A1C" data={patientMetricA1c} />
+            <MetricsTable name="A1C" data={patientMetricA1c} nbrData={nbrA1c}  getMore={setGetMoreA1C}/>
           </Col>
         </Row>
       </Container>

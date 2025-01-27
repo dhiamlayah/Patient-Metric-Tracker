@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Query } from '@nestjs/common';
 import { MetricA1cService } from './metric-a1c.service';
 import { CreateMetricA1cDto } from './dto/create-metric-a1c.dto';
 
@@ -13,8 +13,8 @@ export class MetricA1cController {
 
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.metricA1cService.findOne(+id);
+  findOne(@Param('id') id: string,@Query('skip') skip?: number) {
+    return this.metricA1cService.findOne(+id,skip);
   }
 
 

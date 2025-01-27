@@ -25,9 +25,7 @@ export class PatientRepository extends Repository<Patient> {
     const queryBuilder = await this.createQueryBuilder('p');
     return await queryBuilder
       .select(selectFields)
-      .leftJoin('p.metricA1c', 
-        'ma', 
-        metricA1cJoinCondition)
+      .leftJoin('p.metricA1c', 'ma', metricA1cJoinCondition)
       .leftJoin(
         'p.metricBloodPressure',
         'mbp',
@@ -38,13 +36,11 @@ export class PatientRepository extends Repository<Patient> {
   async getPatientsWithMetrics(startFrom: number = 0) {
     return (await this.joinThreeTables())
       .offset(startFrom)
-      .limit(startFrom + 10)
+      .limit(startFrom + 20)
       .getManyAndCount();
   }
 
   async getSinglePatientWithMetrics(id: number) {
-    return (await this.joinThreeTables())
-    .where(`p.id=${id}`)
-    .getOne();
+    return (await this.joinThreeTables()).where(`p.id=${id}`).getOne();
   }
 }

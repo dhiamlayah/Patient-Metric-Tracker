@@ -19,24 +19,32 @@ export class MetricA1cService {
       const metricA1c = this.repo.create(createMetricA1cDto);
       return this.repo.save(metricA1c);
     } catch (err: any) {
-      console.error(`error in creation metric-a1c ${err.message}`);
       throw new InternalServerErrorException('Error creating metric-a1c');
     }
   }
-  
-  async findOne(id: number) {
-    const metricA1c = await this.repo.find({ select:['id','value','recorded_at'],where:{patient_id: id},order:{recorded_at:"asc"} });
+
+  async findOne(id: number,skip:number = 0) {
+    const metricA1c = await this.repo.findAndCount({
+      select: ['id', 'value', 'recorded_at'],
+      where: { patient_id: id },
+      order: { recorded_at: 'DESC' },
+      skip:skip,
+      take:10
+    });
     if (!metricA1c) {
       throw new NotFoundException('metric a1c Not Found, check patient exist');
     }
     return metricA1c;
   }
 
-  async remove(id: number , recorded_at:Date ) {
-    const metricBloodPressure = await this.repo.findOneBy({patient_id: id,recorded_at:recorded_at});
+  async remove(id: number, recorded_at: Date) {
+    const metricBloodPressure = await this.repo.findOneBy({
+      patient_id: id,
+      recorded_at: recorded_at,
+    });
     if (metricBloodPressure) {
       await this.repo.remove(metricBloodPressure);
-      return 'Row Deleted Succussfuly'
+      return 'Row Deleted Succussfuly';
     }
     throw new NotFoundException(
       'metric blood pressure, Not Found check patient exist',

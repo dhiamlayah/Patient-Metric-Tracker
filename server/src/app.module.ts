@@ -12,10 +12,11 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,  // Makes it accessible globally in the app
+      isGlobal: true, 
     }),
     MetricA1cModule,
     PatientModule,
+    MetricBloodPressureModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.PG_HOST,
@@ -26,8 +27,7 @@ import { ConfigModule } from '@nestjs/config';
       database: process.env.PG_DATABASE,
       synchronize: true,
       logging: true,
-    }),
-    MetricBloodPressureModule,
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

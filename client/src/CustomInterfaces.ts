@@ -17,7 +17,7 @@ export interface PatientMetricBloodPressure {
 
   
 export interface Patient {
-    id:number,
+    id?:number,
     username: string;
     metricA1c: [
       {

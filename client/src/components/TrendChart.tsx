@@ -3,6 +3,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 
 function TrendChart({ data, metrics ,name }:any) {
   const colors = ["#D20103", "#254A02"]
+  const reversetData = data?.slice().reverse();
 
   return (
     <Card className="mb-4">
@@ -10,7 +11,7 @@ function TrendChart({ data, metrics ,name }:any) {
         <Card.Title>{`Metrics Trends ${name}`} </Card.Title>
         <div style={{ height: "300px" }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data}>
+            <LineChart data={reversetData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="recorded_at" />
               <YAxis />

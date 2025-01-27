@@ -12,10 +12,14 @@ export const createMetricA1c = async (
 };
 
 export const getAllPatientA1c = async (
-  id: string
-): Promise<PatientMetricA1c[]> => {
-  const response: AxiosResponse<PatientMetricA1c[]> = await axios.get(
-    `http://localhost:3000/metric-a1c/${id}`
+  id: string , skip ?:number
+): Promise<[PatientMetricA1c[],number]> => {
+  const response: AxiosResponse<[PatientMetricA1c[],number]> = await axios.get(
+    `http://localhost:3000/metric-a1c/${id}`,{
+        params: {
+          skip: skip || 0, 
+        },
+    }
   );
   return response.data;
 };

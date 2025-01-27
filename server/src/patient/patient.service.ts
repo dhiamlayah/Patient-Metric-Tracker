@@ -11,18 +11,16 @@ export class PatientService {
       const user = this.repo.create(createPatientDto);
       return this.repo.save(user);
     } catch (err: any) {
-      console.log(`error from creation ${err.message}`);
-      throw new InternalServerErrorException('Error creating patient');
+      throw new InternalServerErrorException('Error in creating new  patient');
     }
   }
 
   async findAll(startFrom?:number) {
-   try{
     const patients = await this.repo.getPatientsWithMetrics(startFrom)
+    if(!patients){
+      throw new InternalServerErrorException("Patients Not Found");
+    }
     return patients
-   }catch(err:any){
-    throw new InternalServerErrorException('Error getting patients');
-   }
   }
 
   async findOne(id: number) {
@@ -30,7 +28,5 @@ export class PatientService {
       if(!patient){
         throw new NotFoundException('Patient Not Found')}
       return patient
-     
    }
-
 }
