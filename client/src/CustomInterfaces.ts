@@ -11,7 +11,7 @@ export interface PatientMetricBloodPressure {
   systolic: number;
   diastolic: number;
   recorded_at: Date | string;
-  patient_id?:number
+  patient_id?:number 
 }
 
 

@@ -1,5 +1,5 @@
 import { Container, Row, Col } from "react-bootstrap";
-import { useEffect, useState, createContext, useContext } from "react";
+import { useEffect, useState, createContext } from "react";
 import { useParams } from "react-router-dom";
 import { getAllPatientA1c } from "../services/metric-a1c";
 import { getPatient } from "../services/patients";
@@ -13,7 +13,7 @@ import {
   PatientMetricBloodPressure,
 } from "../CustomInterfaces";
 import UpdateA1c from "./UpdateA1c";
-import UpdateBP from "./updateBP";
+import UpdateBP from "./UpdateBP";
 
 export const GlobalUpdateContext = createContext({
   handleShowUpdate: (name: string) => {}
@@ -30,6 +30,7 @@ function Dashboard() {
   const params = useParams();
   const patientId = params.id;
 
+  // this fuction is responsible to which update box should we open 
   const handleShowUpdate = (name: string) => {
     if(name === "A1c"){
       setShowA1c(true) 
@@ -49,7 +50,7 @@ function Dashboard() {
       const allPatientAtc = await getAllPatientA1c(id);
       setPatientMetricA1C(allPatientAtc);
     } catch (error: any) {
-      console.log("err"); //handle the error
+      console.error(`Error From Server ${error?.message}`); 
     }
   };
 
@@ -59,7 +60,7 @@ function Dashboard() {
       const allPatientBP = await getAllPatientBloodPressure(id);
       setPatientMetricBP(allPatientBP);
     } catch (error: any) {
-      console.log("err"); //handle the error
+      console.error(`Error From Server ${error?.message}`); 
     }
   };
 
@@ -74,7 +75,7 @@ function Dashboard() {
         metricA1c: [],
         metricBloodPressure: [],
       });
-      console.log("err"); //handle the error
+      console.error(`Error From Server ${error?.message}`); 
     }
   };
 

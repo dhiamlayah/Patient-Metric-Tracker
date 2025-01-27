@@ -4,7 +4,12 @@ import {
   PatientMetricBloodPressure,
 } from "../CustomInterfaces";
 
-const FormDate = ({ setData ,data}: any) => {
+interface Props {
+  data: PatientMetricA1c | PatientMetricBloodPressure
+  setData: React.Dispatch<React.SetStateAction<any>> 
+}
+
+const FormDate = ({ setData ,data}: Props) => {
   return (
     <Form.Group className="mb-3">
       <Form.Label>RECORDED AT :</Form.Label>

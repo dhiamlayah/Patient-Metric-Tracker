@@ -1,6 +1,11 @@
 import { Table } from "react-bootstrap"
+import { PatientMetricA1c, PatientMetricBloodPressure } from "../CustomInterfaces";
+interface Props {
+  name : "Blood Pressur" | "A1C",
+  data:PatientMetricBloodPressure[] | PatientMetricA1c[] | undefined ,
+}
 
-function MetricsTable({name , data}:any) {
+function MetricsTable({name , data}:Props) {
     let reversetData = data?.slice().reverse();
 return (
     <div className="table-responsive">

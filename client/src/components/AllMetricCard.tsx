@@ -1,7 +1,8 @@
 import { Col } from "react-bootstrap";
 import MetricCard from "./MetricCard";
+import { Patient } from "../CustomInterfaces";
 
-const AllMetricCard = ({patient}:any) => {
+const AllMetricCard = ({patient}:{patient:Patient}) => {
   return (
     <>
       <Col key={1} md={4}>
@@ -15,7 +16,7 @@ const AllMetricCard = ({patient}:any) => {
               ? `${patient.metricBloodPressure[0].systolic}/${patient.metricBloodPressure[0].diastolic}`
               : "Still Didn't Measure Yet "
           }
-          change={patient.metricBloodPressure[0]?.recorded_at}
+          date={patient.metricBloodPressure[0]?.recorded_at}
         />
       </Col>
       <Col key={3} md={4}>
@@ -26,7 +27,7 @@ const AllMetricCard = ({patient}:any) => {
               ? patient.metricA1c[0].value
               : "Still Didn't Measure Yet "
           }
-          change={patient.metricA1c[0]?.recorded_at}
+          date={patient.metricA1c[0]?.recorded_at}
         />
       </Col>
     </>

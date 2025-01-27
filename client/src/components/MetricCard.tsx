@@ -2,7 +2,15 @@ import { useContext } from "react";
 import { Card } from "react-bootstrap"
 import { ClipboardPlus } from 'react-bootstrap-icons';
 import { GlobalUpdateContext } from "./Dashboard";
-function MetricCard({ name, value, change }:any) {
+
+interface Props {
+  name : string ,
+  value : number | string ,
+  date ?: Date | string ,
+}
+
+function MetricCard({ name, value, date }:Props) {
+
 const {handleShowUpdate}=useContext(GlobalUpdateContext)
 
   return (
@@ -13,7 +21,7 @@ const {handleShowUpdate}=useContext(GlobalUpdateContext)
           {name!="Patient" && <ClipboardPlus style={{cursor:'alias'}}  onClick={()=>name==='Blood Pressure'?handleShowUpdate("BP"):handleShowUpdate("A1c")}/>}
         </div>
         <div className="h3 mb-0">{value}</div>
-        <small className={ "text-danger"}>{change}</small>
+        {date &&  <small className={ "text-danger"}>{`${date}`}</small> }
       </Card.Body>
     </Card>
   )

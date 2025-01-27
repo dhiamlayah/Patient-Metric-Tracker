@@ -8,12 +8,22 @@ import ModalEntity from "./ModalEntity";
 import FormDate from "./FormDate";
 import FormNumber from "./FormNumber";
 
-function UpdateBP({ handleShowUpdate, showBP, patientId, setRerender }: any) {
+
+interface Props {
+  handleShowUpdate:(name:string)=>void
+  showBP:boolean,
+  patientId:string | undefined ,
+  setRerender:React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+
+
+function UpdateBP({ handleShowUpdate, showBP, patientId, setRerender }: Props) {
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
   const [successMessage, setSuccessMessage] = useState<null | string>(null);
   const [newBloodPressure, setNewBloodPressure] =
     useState<PatientMetricBloodPressure>({
-      patient_id: patientId,
+      patient_id: patientId ?parseInt(patientId):NaN ,
       systolic: 0,
       diastolic: 0,
       recorded_at: new Date().toISOString().split("T")[0],

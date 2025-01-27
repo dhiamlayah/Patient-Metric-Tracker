@@ -1,8 +1,15 @@
 import { useState } from "react";
 import TrendChart from "./TrendChart";
 import { Col } from "react-bootstrap";
+import { PatientMetricA1c, PatientMetricBloodPressure } from "../CustomInterfaces";
 
-const AllTrendChart = ({patientMetricBP,patientMetricA1c}:any) => {
+interface Props  {
+  patientMetricBP:PatientMetricBloodPressure[] | undefined,
+  patientMetricA1c:PatientMetricA1c[] | undefined
+}
+
+
+const AllTrendChart = ({patientMetricBP,patientMetricA1c}:Props) => {
       const [curveType, setCurveTtpe] = useState<string>("B-P"); // B-P refere to blood pressure curve and A1C to a1c curve
     const showCurve = (type: string) => {
         setCurveTtpe(type);

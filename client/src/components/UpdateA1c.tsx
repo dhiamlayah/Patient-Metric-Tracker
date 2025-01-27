@@ -8,12 +8,22 @@ import { useState } from 'react';
 import { Alert } from 'react-bootstrap';
 import { createMetricA1c } from '../services/metric-a1c';
 
-function UpdateA1c({handleShowUpdate,showA1c,patientId,setRerender}:any) {
+
+
+interface Props {
+  handleShowUpdate:(name:string)=>void
+  showA1c:boolean,
+  patientId:string | undefined ,
+  setRerender:React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+
+function UpdateA1c({handleShowUpdate,showA1c,patientId,setRerender}:Props) {
    const [errorMessage, setErrorMessage] = useState<null | string>(null);
     const [successMessage, setSuccessMessage] = useState<null | string>(null);
     const [newA1c, setNewA1c] =
       useState<PatientMetricA1c>({
-        patient_id: patientId,
+        patient_id: patientId ? parseInt(patientId):NaN ,
         value: 0,
         recorded_at: new Date().toISOString().split("T")[0],
       });
