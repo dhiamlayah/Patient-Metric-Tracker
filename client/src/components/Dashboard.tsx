@@ -1,5 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { useEffect, useState, createContext } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { getAllPatientA1c } from "../services/metric-a1c";
 import { getPatient } from "../services/patients";
@@ -20,13 +21,16 @@ export const GlobalUpdateContext = createContext({
 });
 
 function Dashboard() {
-  const [rerender,setRerender]=useState(false)    // this will rerender the data each time we add new values
-  const [getMoreA1C,setGetMoreA1C]=useState(false)    // this will rerender the data each time we add new values
-  const [showA1c, setShowA1c] = useState(false);  //open box modal to add new A1C measure
-  const [showBP, setShowBP] = useState(false);    //open box modal to add new blood pressure measure
-  const [nbrA1c,setNbrA1C]=useState<number>(0)
+  const [rerender,setRerender]=useState(false)       // this will rerender the data each time we add new values
+  const [getMoreA1C,setGetMoreA1C]=useState(false)   // this will rerender the data each time we add new values
+  const [getMoreBP,setGetMoreBP]=useState(false)     // this will rerender the data each time we add new values
+  const [showA1c, setShowA1c] = useState(false);     // open box modal to add new A1C measure
+  const [showBP, setShowBP] = useState(false);       // open box modal to add new blood pressure measure
+  const [nbrA1c,setNbrA1C]=useState<number>(0)       // all number of patient A1C exist in the database 
+  const [nbrBP,setNbrBP]=useState<number>(0)         // all number of patient BP exist in the database
+
   const [patientMetricA1c, setPatientMetricA1C] =useState<PatientMetricA1c[]>([]);
-  const [patientMetricBP, setPatientMetricBP] =useState<PatientMetricBloodPressure[]>();
+  const [patientMetricBP, setPatientMetricBP] =useState<PatientMetricBloodPressure[]>([]);
   const [patient, setPatient] = useState<Patient>();
 
   const params = useParams();
@@ -46,30 +50,35 @@ function Dashboard() {
     }
   };
 
-  // send a request to get A1C historyc
+  // send a request to get A1C historic
   const fetchPatientA1cData = async (id: string,skip?:number) => {
     try {
       if(!skip){
-        const allPatientAtc = await getAllPatientA1c(id);
-        setNbrA1C(allPatientAtc[1])
-        setPatientMetricA1C(allPatientAtc[0]);
+        const [allPatientAtc,totalNbr] = await getAllPatientA1c(id);
+        setNbrA1C(totalNbr)
+        setPatientMetricA1C(allPatientAtc);
       }else{
         const addMorePatientAtc = await getAllPatientA1c(id,skip);
-        console.log('add more patient',addMorePatientAtc)
         setPatientMetricA1C((prev)=>{return [...prev,...addMorePatientAtc[0]]})
       }
     } catch (error: any) {
-      console.error(`Error From Server ${error?.message}`); 
+      toast.error("Can't fetch Patient A1C measures ");
     }
   };
 
-  // send a request to get Blood Pressure historyc
-  const fetchPatientBloodPressurData = async (id: string) => {
+  // send a request to get Blood Pressure historic
+  const fetchPatientBloodPressurData = async (id: string,skip?:number) => {
     try {
-      const allPatientBP = await getAllPatientBloodPressure(id);
-      setPatientMetricBP(allPatientBP);
+      if(!skip){
+        const [allPatientBP,totalNbr] = await getAllPatientBloodPressure(id);
+        setNbrBP(totalNbr)
+        setPatientMetricBP(allPatientBP);
+      }else{
+        const addMorePatientBP = await getAllPatientBloodPressure(id,skip);
+        setPatientMetricBP((prev)=>{return [...prev,...addMorePatientBP[0]]})
+      }
     } catch (error: any) {
-      console.error(`Error From Server ${error?.message}`); 
+      toast.error("Can't fetch Patient Blood Pressure measures ");
     }
   };
 
@@ -84,25 +93,36 @@ function Dashboard() {
         metricA1c: [],
         metricBloodPressure: [],
       });
-      console.error(`Error From Server ${error?.message}`); 
+      toast.error("Can't fetch Patient");
     }
   };
 
+
+  //Initial Fetching Data
   useEffect(() => {
     if (patientId) {
       fetchPatient(patientId);
       fetchPatientA1cData(patientId);
       fetchPatientBloodPressurData(patientId);
     }
-  }, [patientId,rerender]);
+  }, [rerender]);
 
-
+  //Fetching more A1C Data 
   useEffect(()=>{
     if (patientId) {
       const skip = patientMetricA1c.length
       fetchPatientA1cData(patientId,skip);
     }
   },[getMoreA1C])
+
+  //Fetching more A1C Data 
+  useEffect(()=>{
+    if (patientId) {
+      const skip = patientMetricBP.length
+      fetchPatientBloodPressurData(patientId,skip);
+    }
+  },[getMoreBP])
+
 
   return (
     <GlobalUpdateContext.Provider value={{ handleShowUpdate }}>
@@ -124,20 +144,25 @@ function Dashboard() {
 
         <Row>
           <Col key={1} md={6}>
-            {/* <MetricsTable name="Blood Pressur" data={patientMetricBP} nbrData={nbrA1c} /> */}
+            <MetricsTable name="Blood Pressur" data={patientMetricBP} nbrData={nbrBP} getMore={setGetMoreBP} />
           </Col>
           <Col key={2} md={4}>
             <MetricsTable name="A1C" data={patientMetricA1c} nbrData={nbrA1c}  getMore={setGetMoreA1C}/>
           </Col>
         </Row>
+        
       </Container>
    
+
+  
       {showBP && (
         <UpdateBP handleShowUpdate={handleShowUpdate} showBP={showBP} patientId={patientId} setRerender={setRerender}/>
       )}
       {showA1c && (
         <UpdateA1c handleShowUpdate={handleShowUpdate} showA1c={showA1c} patientId={patientId} setRerender={setRerender}/>
       )}
+
+      <ToastContainer />
     </GlobalUpdateContext.Provider>
   );
 }

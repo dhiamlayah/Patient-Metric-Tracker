@@ -25,9 +25,15 @@ export class MetricBloodPressureService {
       );
     }
   }
-  
-  async findOne(id: number) {
-    const metricBloodPressure = await this.repo.find({select:['id','systolic','diastolic','recorded_at'], where:{patient_id: id},order:{recorded_at:"asc"} });
+
+  async findOne(id: number,skip:number = 0) {
+    const metricBloodPressure = await this.repo.findAndCount({
+      select: ['id', 'systolic', 'diastolic', 'recorded_at'],
+      where: { patient_id: id },
+      order: { recorded_at: 'DESC' },
+      skip:skip,
+      take:10
+    });
     if (!metricBloodPressure) {
       throw new NotFoundException(
         'metric blood pressure, Not Found check patient exist',
@@ -36,15 +42,17 @@ export class MetricBloodPressureService {
     return metricBloodPressure;
   }
 
-  async remove(id: number , recorded_at:Date ) {
-    const metricBloodPressure = await this.repo.findOneBy({patient_id: id,recorded_at:recorded_at});
+  async remove(id: number, recorded_at: Date) {
+    const metricBloodPressure = await this.repo.findOneBy({
+      patient_id: id,
+      recorded_at: recorded_at,
+    });
     if (metricBloodPressure) {
       await this.repo.remove(metricBloodPressure);
-      return 'Row Deleted Succussfuly'
+      return 'Row Deleted Succussfuly';
     }
     throw new NotFoundException(
       'metric blood pressure, Not Found check patient exist',
     );
   }
-
 }

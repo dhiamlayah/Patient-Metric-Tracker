@@ -10,7 +10,7 @@ interface Props  {
 
 
 const AllTrendChart = ({patientMetricBP,patientMetricA1c}:Props) => {
-      const [curveType, setCurveTtpe] = useState<string>("B-P"); // B-P refere to blood pressure curve and A1C to a1c curve
+      const [curveType, setCurveTtpe] = useState<string>("B-P");  // B-P refere to blood pressure curve and A1C to a1c curve
     const showCurve = (type: string) => {
         setCurveTtpe(type);
     };
@@ -35,7 +35,7 @@ const AllTrendChart = ({patientMetricBP,patientMetricA1c}:Props) => {
       <Col key={5} md={1}>
         <button
           type="button"
-          className={`btn  d-md-block mb-md-2 mt-md-5 mx-4 mx-md-0  ${
+          className={`btn  d-md-block mb-md-2 mt-md-5 mx-4 mx-md-0  mb-3 mb-md-0 ${
             curveType === "A1C" ? "btn-dark" : "btn-outline-dark"
           }`}
           onClick={() => showCurve("A1C")}
@@ -44,7 +44,7 @@ const AllTrendChart = ({patientMetricBP,patientMetricA1c}:Props) => {
         </button>
         <button
           type="button"
-          className={`btn  d-md-block  ${
+          className={`btn  d-md-block mb-3 mb-md-0   ${
             curveType === "B-P" ? "btn-dark" : "btn-outline-dark"
           }`}
           onClick={() => showCurve("B-P")}

@@ -15,10 +15,14 @@ export const createMetricBloodPressure = async (
 
 
 export const getAllPatientBloodPressure = async (
-  id: string
-): Promise<PatientMetricBloodPressure[]> => {
-  const response: AxiosResponse<PatientMetricBloodPressure[]> = await axios.get(
-    `http://localhost:3000/metric-blood-pressure/${id}`
+  id: string , skip ?:number
+): Promise<[PatientMetricBloodPressure[],number]> => {
+  const response: AxiosResponse<[PatientMetricBloodPressure[],number]> = await axios.get(
+    `http://localhost:3000/metric-blood-pressure/${id}`,{
+      params: {
+        skip: skip || 0, 
+      },
+  }
   );
   return response.data;
 };

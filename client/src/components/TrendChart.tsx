@@ -1,7 +1,14 @@
 import { Card } from "react-bootstrap"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
+import { PatientMetricA1c, PatientMetricBloodPressure } from "../CustomInterfaces";
 
-function TrendChart({ data, metrics ,name }:any) {
+interface Props {
+  data : PatientMetricBloodPressure[]  | PatientMetricA1c[] | undefined,
+  name : "Blood Pressur Historic" | "A1C Historic",
+  metrics :string[]
+}
+
+function TrendChart({ data, metrics ,name }:Props) {
   const colors = ["#D20103", "#254A02"]
   const reversetData = data?.slice().reverse();
 

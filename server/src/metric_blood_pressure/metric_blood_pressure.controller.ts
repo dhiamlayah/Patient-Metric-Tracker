@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { MetricBloodPressureService } from './metric_blood_pressure.service';
 import { CreateMetricBloodPressureDto } from './dto/create-metric_blood_pressure.dto';
 
@@ -13,8 +13,8 @@ export class MetricBloodPressureController {
 
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.metricBloodPressureService.findOne(+id);
+  findOne(@Param('id') id: string,@Query('skip') skip?: number) {
+    return this.metricBloodPressureService.findOne(+id,skip);
   }
 
 
