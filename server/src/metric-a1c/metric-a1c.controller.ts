@@ -17,6 +17,11 @@ export class MetricA1cController {
     return this.metricA1cService.findOne(+id,skip);
   }
 
+  @Get(':id/avg')
+  getAvrageByMonths(@Param('id') id: string){
+    return this.metricA1cService.getAvrageByMonths(+id)
+  }
+
 
   @Delete(':id')
   remove(@Param('id') id: string , @Body() body:{recorded_at:Date}) {

@@ -15,6 +15,7 @@ import {
 } from "../CustomInterfaces";
 import UpdateA1c from "./UpdateA1c";
 import UpdateBP from "./UpdateBP";
+import BarChartComponent from "./BarChar";
 
 export const GlobalUpdateContext = createContext({
   handleShowUpdate: (name: string) => {}
@@ -142,6 +143,7 @@ function Dashboard() {
           />
         </Row>
 
+
         <Row>
           <Col key={1} md={6}>
             <MetricsTable name="Blood Pressur" data={patientMetricBP} nbrData={nbrBP} getMore={setGetMoreBP} />
@@ -150,7 +152,6 @@ function Dashboard() {
             <MetricsTable name="A1C" data={patientMetricA1c} nbrData={nbrA1c}  getMore={setGetMoreA1C}/>
           </Col>
         </Row>
-        
       </Container>
    
 

@@ -4,16 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateMetricBloodPressureDto } from './dto/create-metric_blood_pressure.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { MetricBloodPressure } from './entities/metric_blood_pressure.entity';
-import { Repository } from 'typeorm';
+import { MetricBloodPressureRepository } from './metric_blood_pressure.repository';
 
 @Injectable()
 export class MetricBloodPressureService {
-  constructor(
-    @InjectRepository(MetricBloodPressure)
-    private repo: Repository<MetricBloodPressure>,
-  ) {}
+  constructor( private repo: MetricBloodPressureRepository) {}
 
   create(createMetricBloodPressureDto: CreateMetricBloodPressureDto) {
     try {
@@ -40,6 +35,14 @@ export class MetricBloodPressureService {
       );
     }
     return metricBloodPressure;
+  }
+
+  async getAvrageByMonths(id:number){
+    const averageMetricA1c = await this.repo.getAvrageByMonths(id)
+    if (!averageMetricA1c) {
+      throw new NotFoundException('Cant Calculate Metric Blood Pressure  Average ');
+    }
+    return averageMetricA1c
   }
 
   async remove(id: number, recorded_at: Date) {

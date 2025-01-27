@@ -4,15 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateMetricA1cDto } from './dto/create-metric-a1c.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { MetricA1c } from './entities/metric-a1c.entity';
-import { Repository } from 'typeorm';
+import { MetricA1cRepository } from './metric-a1c-repository';
 
 @Injectable()
 export class MetricA1cService {
-  constructor(
-    @InjectRepository(MetricA1c) private repo: Repository<MetricA1c>,
-  ) {}
+  constructor(private repo: MetricA1cRepository) {}
 
   create(createMetricA1cDto: CreateMetricA1cDto) {
     try {
@@ -35,6 +31,14 @@ export class MetricA1cService {
       throw new NotFoundException('metric a1c Not Found, check patient exist');
     }
     return metricA1c;
+  }
+
+  async getAvrageByMonths(id:number){
+    const averageMetricA1c = await this.repo.getAvrageByMonths(id)
+    if (!averageMetricA1c) {
+      throw new NotFoundException('Cant Calculate Metric A1C Average ');
+    }
+    return averageMetricA1c
   }
 
   async remove(id: number, recorded_at: Date) {
