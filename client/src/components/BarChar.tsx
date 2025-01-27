@@ -1,15 +1,12 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
+import { AvgMetricA1c, AvgMetricBloodPressure } from "../CustomInterfaces"
 
-const data = [
-  { a: "11/25", sales: 4000 , by:3333  },
-  { a: "11/24", sales: 3000 , by:3333 },
-  { a: "11/24", sales: 2000 , by:3333 },
-  { a: "11/24", sales: 2780 , by:3333 },
-  { a: "11/24", sales: 1890 , by:3333 },
-  { a: "11/24", sales: 2390 , by:3333 },
-]
-
-const BarChartComponent: React.FC = () => {
+interface Props {
+  data : AvgMetricA1c[] | AvgMetricBloodPressure[],
+  metrics :string[]
+}
+const BarChartComponent = ({data,metrics}:Props) => {
+     const colors = ["#ee6a29","#a7c0c7"]
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart
@@ -22,12 +19,13 @@ const BarChartComponent: React.FC = () => {
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="a" />
+        <XAxis dataKey="date" />
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="sales" fill="#ee6a29" />
-        <Bar dataKey="by" fill="#ee6a29" />
+        {metrics.map((mertic,index)=>{
+               return  <Bar key={index} dataKey={mertic} fill={colors[index]} />
+        })}
       </BarChart>
     </ResponsiveContainer>
   )

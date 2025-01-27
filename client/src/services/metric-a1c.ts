@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { PatientMetricA1c } from "../CustomInterfaces";
+import { AvgMetricA1c, PatientMetricA1c } from "../CustomInterfaces";
 
 export const createMetricA1c = async (
   patientMetricA1c: PatientMetricA1c
@@ -11,8 +11,19 @@ export const createMetricA1c = async (
   return response.data;
 };
 
+
+
+export const getAvrageOfA1cByMonths = async (
+  id: number 
+): Promise<AvgMetricA1c[]> => {
+  const response: AxiosResponse<AvgMetricA1c[]> = await axios.get(
+    `http://localhost:3000/metric-a1c/${id}/avg`
+  );
+  return response.data;
+};
+
 export const getAllPatientA1c = async (
-  id: string , skip ?:number
+  id: number , skip ?:number
 ): Promise<[PatientMetricA1c[],number]> => {
   const response: AxiosResponse<[PatientMetricA1c[],number]> = await axios.get(
     `http://localhost:3000/metric-a1c/${id}`,{

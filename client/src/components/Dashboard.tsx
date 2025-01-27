@@ -18,7 +18,7 @@ import UpdateBP from "./UpdateBP";
 import BarChartComponent from "./BarChar";
 
 export const GlobalUpdateContext = createContext({
-  handleShowUpdate: (name: string) => {}
+  handleShowUpdate: (name: string) => {} , patientId : 0
 });
 
 function Dashboard() {
@@ -35,7 +35,7 @@ function Dashboard() {
   const [patient, setPatient] = useState<Patient>();
 
   const params = useParams();
-  const patientId = params.id;
+  const patientId = params.id ? +params.id : 0 ;
 
   // this fuction is responsible to which update box should we open 
   const handleShowUpdate = (name: string) => {
@@ -52,7 +52,7 @@ function Dashboard() {
   };
 
   // send a request to get A1C historic
-  const fetchPatientA1cData = async (id: string,skip?:number) => {
+  const fetchPatientA1cData = async (id: number,skip?:number) => {
     try {
       if(!skip){
         const [allPatientAtc,totalNbr] = await getAllPatientA1c(id);
@@ -68,7 +68,7 @@ function Dashboard() {
   };
 
   // send a request to get Blood Pressure historic
-  const fetchPatientBloodPressurData = async (id: string,skip?:number) => {
+  const fetchPatientBloodPressurData = async (id: number,skip?:number) => {
     try {
       if(!skip){
         const [allPatientBP,totalNbr] = await getAllPatientBloodPressure(id);
@@ -84,7 +84,7 @@ function Dashboard() {
   };
 
   // send a request to get Patient with last measure of A1C and Blood-presseur
-  const fetchPatient = async (id: string) => {
+  const fetchPatient = async (id: number) => {
     try {
       const patientData = await getPatient(id);
       setPatient(patientData);
@@ -101,32 +101,26 @@ function Dashboard() {
 
   //Initial Fetching Data
   useEffect(() => {
-    if (patientId) {
       fetchPatient(patientId);
       fetchPatientA1cData(patientId);
       fetchPatientBloodPressurData(patientId);
-    }
   }, [rerender]);
 
   //Fetching more A1C Data 
   useEffect(()=>{
-    if (patientId) {
       const skip = patientMetricA1c.length
       fetchPatientA1cData(patientId,skip);
-    }
   },[getMoreA1C])
 
   //Fetching more A1C Data 
   useEffect(()=>{
-    if (patientId) {
       const skip = patientMetricBP.length
       fetchPatientBloodPressurData(patientId,skip);
-    }
   },[getMoreBP])
 
 
   return (
-    <GlobalUpdateContext.Provider value={{ handleShowUpdate }}>
+    <GlobalUpdateContext.Provider value={{ handleShowUpdate , patientId }}>
       <Container className="mt-4">
         <h1 className="mb-4">Patient Metric Tracker</h1>
 
@@ -157,10 +151,10 @@ function Dashboard() {
 
   
       {showBP && (
-        <UpdateBP handleShowUpdate={handleShowUpdate} showBP={showBP} patientId={patientId} setRerender={setRerender}/>
+        <UpdateBP  showBP={showBP}  setRerender={setRerender}/>
       )}
       {showA1c && (
-        <UpdateA1c handleShowUpdate={handleShowUpdate} showA1c={showA1c} patientId={patientId} setRerender={setRerender}/>
+        <UpdateA1c showA1c={showA1c}  setRerender={setRerender}/>
       )}
 
       <ToastContainer />

@@ -1,78 +1,80 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import TrendChart from "./TrendChart";
-import { Col } from "react-bootstrap";
-import { PatientMetricA1c, PatientMetricBloodPressure } from "../CustomInterfaces";
+import { Col, ListGroup } from "react-bootstrap";
+import {
+  AvgMetricA1c,
+  AvgMetricBloodPressure,
+  PatientMetricA1c,
+  PatientMetricBloodPressure,
+} from "../CustomInterfaces";
 import BarChartComponent from "./BarChar";
+import { GlobalUpdateContext } from "./Dashboard";
+import { getAvrageOfA1cByMonths } from "../services/metric-a1c";
+import { getAvrageOfBloodPressureByMonths } from "../services/metric-blood-pressure";
+import {
+  concatYearWithMonthA1c,
+  concatYearWithMonthBP,
+} from "../utils/concatYearWithMonth";
+import ListShow from "./ListShow";
 
-interface Props  {
-  patientMetricBP:PatientMetricBloodPressure[] | undefined,
-  patientMetricA1c:PatientMetricA1c[] | undefined
+interface Props {
+  patientMetricBP: PatientMetricBloodPressure[] | undefined;
+  patientMetricA1c: PatientMetricA1c[] | undefined;
 }
 
+const AllTrendChart = ({ patientMetricBP, patientMetricA1c }: Props) => {
+  const { patientId } = useContext(GlobalUpdateContext);
+  const [show, setShow] = useState<{ type: string; name: string }>({
+    type: "curve",
+    name: "B-P",
+  });
 
-const AllTrendChart = ({patientMetricBP,patientMetricA1c}:Props) => {
-      const [curveType, setCurveTtpe] = useState<string>("B-P");  // B-P refere to blood pressure curve and A1C to a1c curve
-    const showCurve = (type: string) => {
-        setCurveTtpe(type);
-    };
+  const [avgMetricA1c, setAvgMetricA1C] = useState<AvgMetricA1c[]>([]);
+  const [avgMetricBP, setAvgMetricBP] = useState<AvgMetricBloodPressure[]>([]);
+
+  const fetchAvrMetricA1C = async (id: number) => {
+    let avgA1c = await getAvrageOfA1cByMonths(id);
+    avgA1c = concatYearWithMonthA1c(avgA1c);
+    setAvgMetricA1C(avgA1c);
+  };
+  const fetchAvrMetricBP = async (id: number) => {
+    let avgBP = await getAvrageOfBloodPressureByMonths(id);
+    avgBP = concatYearWithMonthBP(avgBP);
+    setAvgMetricBP(avgBP);
+  };
+
+  useEffect(() => {
+    fetchAvrMetricA1C(patientId);
+    fetchAvrMetricBP(patientId);
+  }, []);
+
   return (
     <>
       <Col key={4}>
-        {/* {curveType === "B-P" ? (
+        {show.name === "B-P" && show.type === "curve" ? (
           <TrendChart
             name="Blood Pressur Historic"
             data={patientMetricBP}
             metrics={["systolic", "diastolic"]}
           />
-        ) : (
+        ) : show.name === "A1C" && show.type === "curve" ? (
           <TrendChart
             name="A1C Historic"
             data={patientMetricA1c}
             metrics={["value"]}
           />
-        )} */}
-                <BarChartComponent />
-
+        ) : show.name === "A1C" && show.type === "bar" ? (
+          <BarChartComponent data={avgMetricA1c} metrics={["average_value"]} />
+        ) : (
+          <BarChartComponent
+            data={avgMetricBP}
+            metrics={["average_diastolic", "average_systolic"]}
+          />
+        )}
       </Col>
 
       <Col key={5} md={1}>
-        <button
-          type="button"
-          className={`btn  d-md-block mb-md-2 mt-md-5 mx-4 mx-md-0  mb-3 mb-md-0 ${
-            curveType === "A1C" ? "btn-dark" : "btn-outline-dark"
-          }`}
-          onClick={() => showCurve("A1C")}
-        >
-          A1C
-        </button>
-        <button
-          type="button"
-          className={`btn  d-md-block mb-3 mb-md-0   ${
-            curveType === "B-P" ? "btn-dark" : "btn-outline-dark"
-          }`}
-          onClick={() => showCurve("B-P")}
-        >
-          B-P
-        </button>
-        <button
-          type="button"
-          className={`btn  d-md-block mb-3 mb-md-0 my-2 ${
-            curveType === "A1C" ? "btn-dark" : "btn-outline-dark"
-          }`}
-          onClick={() => showCurve("A1C")}
-        >
-          Curve
-        </button>
-        <button
-          type="button"
-          className={`btn  d-md-block mb-3 mb-md-0  my-1  ${
-            curveType === "B-P" ? "btn-dark" : "btn-outline-dark"
-          }`}
-          onClick={() => showCurve("B-P")}
-        >
-          Bar
-        </button>
-
+        <ListShow setShow={setShow} show={show} />
       </Col>
     </>
   );

@@ -9,7 +9,7 @@ export const getPatients = async () => {
     return response.data;
 };
 
-export const getPatient = async (id: string): Promise<Patient>  => {
+export const getPatient = async (id: number): Promise<Patient>  => {
     const response: AxiosResponse<Patient> = await axios.get(
       `http://localhost:3000/patient/${id}`
     );

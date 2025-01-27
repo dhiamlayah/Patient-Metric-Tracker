@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { PatientMetricBloodPressure } from "../CustomInterfaces";
+import { AvgMetricBloodPressure, PatientMetricBloodPressure } from "../CustomInterfaces";
 
 export const createMetricBloodPressure = async (
   patientMetricBloodPressur: PatientMetricBloodPressure
@@ -12,10 +12,18 @@ export const createMetricBloodPressure = async (
     return response.data
 };
 
+export const getAvrageOfBloodPressureByMonths = async (
+  id: number 
+): Promise<AvgMetricBloodPressure[]> => {
+  const response: AxiosResponse<AvgMetricBloodPressure[]> = await axios.get(
+    `http://localhost:3000/metric-blood-pressure/${id}/avg`
+  );
+  return response.data;
+};
 
 
 export const getAllPatientBloodPressure = async (
-  id: string , skip ?:number
+  id: number , skip ?:number
 ): Promise<[PatientMetricBloodPressure[],number]> => {
   const response: AxiosResponse<[PatientMetricBloodPressure[],number]> = await axios.get(
     `http://localhost:3000/metric-blood-pressure/${id}`,{

@@ -1,35 +1,31 @@
-import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
-import ModalEntity from './ModalEntity';
-import FormNumber from './FormNumber';
-import FormDate from './FormDate';
-import { PatientMetricA1c } from '../CustomInterfaces';
-import { useState } from 'react';
-import { Alert } from 'react-bootstrap';
-import { createMetricA1c } from '../services/metric-a1c';
-
-
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+import ModalEntity from "./ModalEntity";
+import FormNumber from "./FormNumber";
+import FormDate from "./FormDate";
+import { PatientMetricA1c } from "../CustomInterfaces";
+import { useContext, useState } from "react";
+import { Alert } from "react-bootstrap";
+import { createMetricA1c } from "../services/metric-a1c";
+import { GlobalUpdateContext } from "./Dashboard";
 
 interface Props {
-  handleShowUpdate:(name:string)=>void
-  showA1c:boolean,
-  patientId:string | undefined ,
-  setRerender:React.Dispatch<React.SetStateAction<boolean>>;
+  showA1c: boolean;
+  setRerender: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+function UpdateA1c({ showA1c, setRerender }: Props) {
+  const { handleShowUpdate, patientId } = useContext(GlobalUpdateContext);
 
-function UpdateA1c({handleShowUpdate,showA1c,patientId,setRerender}:Props) {
-   const [errorMessage, setErrorMessage] = useState<null | string>(null);
-    const [successMessage, setSuccessMessage] = useState<null | string>(null);
-    const [newA1c, setNewA1c] =
-      useState<PatientMetricA1c>({
-        patient_id: patientId ? parseInt(patientId):NaN ,
-        value: 0,
-        recorded_at: new Date().toISOString().split("T")[0],
-      });
+  const [errorMessage, setErrorMessage] = useState<null | string>(null);
+  const [successMessage, setSuccessMessage] = useState<null | string>(null);
+  const [newA1c, setNewA1c] = useState<PatientMetricA1c>({
+    patient_id: patientId,
+    value: 0,
+    recorded_at: new Date().toISOString().split("T")[0],
+  });
   const handleClose = () => handleShowUpdate("close");
 
-      
   const createNewBloodPressure = async () => {
     try {
       if (newA1c.value > 0) {
