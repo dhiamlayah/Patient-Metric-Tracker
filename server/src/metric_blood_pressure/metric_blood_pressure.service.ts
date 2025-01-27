@@ -21,7 +21,6 @@ export class MetricBloodPressureService {
       const metricBloodProcess = this.repo.create(createMetricBloodPressureDto);
       return this.repo.save(metricBloodProcess);
     } catch (err: any) {
-      console.log(`error from creation ${err.message}`);
       throw new InternalServerErrorException(
         'Error creating metric-blood-pressure',
       );
@@ -29,7 +28,7 @@ export class MetricBloodPressureService {
   }
   
   async findOne(id: number) {
-    const metricBloodPressure = await this.repo.find({select:['id','systolic','diastolic','recorded_at'], where:{patient_id: id},order:{recorded_at:"DESC"} });
+    const metricBloodPressure = await this.repo.find({select:['id','systolic','diastolic','recorded_at'], where:{patient_id: id},order:{recorded_at:"asc"} });
     if (!metricBloodPressure) {
       throw new NotFoundException(
         'metric blood pressure, Not Found check patient exist',

@@ -1,7 +1,11 @@
 import { Navbar, Nav, Container } from "react-bootstrap"
 import healthHelperLogo from '../assets/healthhelper_logo.jpg';
+import { Link } from "react-router-dom";
+import { PeopleFill } from "react-bootstrap-icons"; // Import the BiPeople icon
 
 function Header() {
+  const currentPath = window.location.pathname; // Get the current URL path
+
   return (
     <Navbar bg="light" expand="lg" className="border-bottom">
       <Container>
@@ -10,7 +14,7 @@ function Header() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link href="/">All Patients</Nav.Link>
+            {currentPath!=="/patients"&& <Link to="/patients" className="text-decoration-none text-dark fw-bolder"> <PeopleFill/> All Patients</Link> }
           </Nav>
         </Navbar.Collapse>
       </Container>
@@ -19,4 +23,6 @@ function Header() {
 }
 
 export default Header
+
+
 

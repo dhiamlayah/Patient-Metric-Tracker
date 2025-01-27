@@ -11,6 +11,7 @@ export class PatientRepository extends Repository<Patient> {
   private async joinThreeTables() {
     const selectFields = [
       'p.username',
+      'p.id',
       'ma.recorded_at',
       'ma.value',
       'mbp.systolic',
