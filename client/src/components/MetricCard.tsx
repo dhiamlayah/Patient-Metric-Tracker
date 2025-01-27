@@ -18,7 +18,7 @@ const {handleShowUpdate}=useContext(GlobalUpdateContext)
       <Card.Body>
         <div className="d-flex justify-content-between align-items-center mb-2">
           <Card.Title className="h6 text-muted">{name}</Card.Title>
-          {name!="Patient" && <ClipboardPlus style={{cursor:'alias'}}  onClick={()=>name==='Blood Pressure'?handleShowUpdate("BP"):handleShowUpdate("A1c")}/>}
+          {name!="Patient" && <ClipboardPlus style={{cursor:'pointer'}}  onClick={()=>name==='Blood Pressure'?handleShowUpdate("BP"):handleShowUpdate("A1c")}/>}
         </div>
         <div className="h3 mb-0">{value}</div>
         {date &&  <small className={ "text-danger"}>{`${date}`}</small> }

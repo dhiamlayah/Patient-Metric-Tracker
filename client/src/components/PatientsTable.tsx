@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import { Patient } from "../CustomInterfaces";
 import { getPatients } from "../services/patients";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function PatientsTable() {
   const [patients, setPatients] = useState<Patient[]>();
@@ -13,8 +13,9 @@ function PatientsTable() {
   const fetchPatients = async () => {
     try {
       const allPatients = await getPatients();
+      setErrorMessage(null)
       setPatients(allPatients[0]);
-      numberOfPatients = allPatients[1];
+      numberOfPatients = allPatients[1];      // this help in pagination implementation
     } catch (error: any) {
       setErrorMessage("ERROR FROM SERVER TRY AGAIN");
     }
@@ -56,8 +57,8 @@ function PatientsTable() {
         {patients &&
           patients.map((patient, index) => {
             return (
-              <tr key={index} onClick={() => sentToPatient(patient.id)}>
-                <td className="bg-secondary">{index + 1}</td>
+              <tr key={index} style={{cursor:"pointer"}} onClick={() => sentToPatient(patient.id)}>
+                <td className="bg-secondary" >{index + 1}</td>
                 <td>{patient.username}</td>
                 <td>
                   {patient.metricBloodPressure.length !== 0
@@ -82,6 +83,7 @@ function PatientsTable() {
               </tr>
             );
           })}
+        {errorMessage && <tr><td colSpan={6}>{errorMessage}</td></tr>}
       </tbody>
     </Table>
   );

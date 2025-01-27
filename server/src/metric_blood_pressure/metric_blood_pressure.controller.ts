@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MetricBloodPressureService } from './metric_blood_pressure.service';
 import { CreateMetricBloodPressureDto } from './dto/create-metric_blood_pressure.dto';
-import { UpdateMetricBloodPressureDto } from './dto/update-metric_blood_pressure.dto';
 
 @Controller('metric-blood-pressure')
 export class MetricBloodPressureController {
@@ -18,13 +17,9 @@ export class MetricBloodPressureController {
     return this.metricBloodPressureService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateMetricBloodPressureDto: UpdateMetricBloodPressureDto) {
-  //   return this.metricBloodPressureService.update(+id, updateMetricBloodPressureDto);
-  // }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.metricBloodPressureService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string , @Body() body:{recorded_at:Date}) {
+    return this.metricBloodPressureService.remove(+id,body.recorded_at);
+  }
 }

@@ -33,11 +33,4 @@ export class PatientService {
      
    }
 
-  // update(id: number, updatePatientDto: UpdatePatientDto) {
-  //   return `This action updates a #${id} patient`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} patient`;
-  // }
 }

@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateMetricBloodPressureDto } from './dto/create-metric_blood_pressure.dto';
-import { UpdateMetricBloodPressureDto } from './dto/update-metric_blood_pressure.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MetricBloodPressure } from './entities/metric_blood_pressure.entity';
 import { Repository } from 'typeorm';
@@ -37,14 +36,15 @@ export class MetricBloodPressureService {
     return metricBloodPressure;
   }
 
-  // update(
-  //   id: number,
-  //   updateMetricBloodPressureDto: UpdateMetricBloodPressureDto,
-  // ) {
-  //   return `This action updates a #${id} metricBloodPressure`;
-  // }
+  async remove(id: number , recorded_at:Date ) {
+    const metricBloodPressure = await this.repo.findOneBy({patient_id: id,recorded_at:recorded_at});
+    if (metricBloodPressure) {
+      await this.repo.remove(metricBloodPressure);
+      return 'Row Deleted Succussfuly'
+    }
+    throw new NotFoundException(
+      'metric blood pressure, Not Found check patient exist',
+    );
+  }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} metricBloodPressure`;
-  // }
 }
