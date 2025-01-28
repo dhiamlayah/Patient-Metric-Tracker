@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import TrendChart from "./TrendChart";
-import { Col, ListGroup } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import {
   AvgMetricA1c,
   AvgMetricBloodPressure,
@@ -22,7 +22,7 @@ interface Props {
   patientMetricA1c: PatientMetricA1c[] | undefined;
 }
 
-const AllTrendChart = ({ patientMetricBP, patientMetricA1c }: Props) => {
+const Charts = ({ patientMetricBP, patientMetricA1c }: Props) => {
   const { patientId } = useContext(GlobalUpdateContext);
   const [show, setShow] = useState<{ type: string; name: string }>({
     type: "curve",
@@ -64,9 +64,14 @@ const AllTrendChart = ({ patientMetricBP, patientMetricA1c }: Props) => {
             metrics={["value"]}
           />
         ) : show.name === "A1C" && show.type === "bar" ? (
-          <BarChartComponent data={avgMetricA1c} metrics={["average_value"]} />
+          <BarChartComponent
+            name="A1C Average"
+            data={avgMetricA1c}
+            metrics={["average_value"]}
+          />
         ) : (
           <BarChartComponent
+            name="Blood Pressur Average"
             data={avgMetricBP}
             metrics={["average_diastolic", "average_systolic"]}
           />
@@ -80,4 +85,4 @@ const AllTrendChart = ({ patientMetricBP, patientMetricA1c }: Props) => {
   );
 };
 
-export default AllTrendChart;
+export default Charts;

@@ -10,7 +10,7 @@ interface Props {
 
 function TrendChart({ data, metrics ,name }:Props) {
   const colors = ["#D20103", "#254A02"]
-  const reversetData = data?.slice().reverse();
+  const reversetData = data?.slice().reverse();  // I Reverse the order of data to make it more readable 
 
   return (
     <Card className="mb-4">

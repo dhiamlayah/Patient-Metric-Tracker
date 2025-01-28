@@ -8,11 +8,11 @@ const ListShow = ({ setShow,show }: Props) => {
     const colors = ["#ee6a29","#a7c0c7"]
 
     const buttonColorName = (name:string)=>{
-        return show.name!==name ? { cursor:"pointer" } : {cursor:"pointer" , backgroundColor:"#a7c0c7"}
+        return show.name!==name ? { cursor:"pointer" } : {cursor:"pointer" , backgroundColor:colors[1]}
     }
 
     const buttonColorType = ( type:string)=>{
-        return show.type!==type ?{ cursor:"pointer" } : {cursor:"pointer" , backgroundColor:"#ee6a29"}
+        return show.type!==type ?{ cursor:"pointer" } : {cursor:"pointer" , backgroundColor:colors[0]}
     }
 
 

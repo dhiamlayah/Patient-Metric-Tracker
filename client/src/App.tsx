@@ -3,6 +3,7 @@ import Patient from "./pages/Patient";
 import AllPatients from "./pages/AllPatients";
 
 function App() {
+
   return (
     <Router>
       <Routes>

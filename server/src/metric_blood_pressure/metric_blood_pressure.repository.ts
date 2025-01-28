@@ -19,8 +19,8 @@ export class MetricBloodPressureRepository extends Repository<MetricBloodPressur
       .where('mbp.patient_id = :patientId', { patientId })
       .groupBy('EXTRACT(YEAR FROM mbp.recorded_at)')
       .addGroupBy('EXTRACT(MONTH FROM mbp.recorded_at)')
-      .orderBy('year', 'DESC')
-      .addOrderBy('month', 'DESC')
+      .orderBy('year', 'ASC')
+      .addOrderBy('month', 'ASC')
       .getRawMany();
   }
 }

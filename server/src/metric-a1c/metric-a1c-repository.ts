@@ -17,8 +17,8 @@ export class MetricA1cRepository extends Repository<MetricA1c> {
       .where('ma.patient_id = :patientId', { patientId })
       .groupBy('EXTRACT(YEAR FROM ma.recorded_at)')
       .addGroupBy('EXTRACT(MONTH FROM ma.recorded_at)')
-      .orderBy('year', 'DESC')
-      .addOrderBy('month', 'DESC')
+      .orderBy('year', 'ASC')
+      .addOrderBy('month', 'ASC')
       .getRawMany();
   }
 }

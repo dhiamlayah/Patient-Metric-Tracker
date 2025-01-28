@@ -6,7 +6,6 @@ import { getAllPatientA1c } from "../services/metric-a1c";
 import { getPatient } from "../services/patients";
 import { getAllPatientBloodPressure } from "../services/metric-blood-pressure";
 import MetricsTable from "./MetricTable";
-import AllTrendChart from "./AllTrendChart";
 import AllMetricCard from "./AllMetricCard";
 import {
   Patient,
@@ -15,7 +14,7 @@ import {
 } from "../CustomInterfaces";
 import UpdateA1c from "./UpdateA1c";
 import UpdateBP from "./UpdateBP";
-import BarChartComponent from "./BarChar";
+import Charts from "./Charts";
 
 export const GlobalUpdateContext = createContext({
   handleShowUpdate: (name: string) => {} , patientId : 0
@@ -131,7 +130,7 @@ function Dashboard() {
         )}
 
         <Row>
-          <AllTrendChart
+          <Charts
             patientMetricBP={patientMetricBP}
             patientMetricA1c={patientMetricA1c}
           />
