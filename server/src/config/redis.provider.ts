@@ -4,10 +4,12 @@ import Redis from 'ioredis';
 @Injectable()
 export class RedisService {
   private readonly redisClient: Redis;
+
   constructor() {
     this.redisClient = new Redis({
       host: 'localhost',
       port: 6379,
+      maxRetriesPerRequest: null, // Setting this to null resolves the error
     });
   }
 
@@ -17,7 +19,9 @@ export class RedisService {
     });
   }
 
-  getWorker(name: string, processor: (job)=> Promise<void>) {
-    return new Worker(name, processor, { connection: this.redisClient });
+  getWorker(name: string, processor) {
+    return new Worker(name, processor, {
+      concurrency: 50,
+      connection: this.redisClient });
   }
 }

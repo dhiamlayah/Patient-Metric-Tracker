@@ -9,5 +9,6 @@ import { MetricA1cRepository } from './metric-a1c-repository';
   imports:[TypeOrmModule.forFeature([MetricA1c])],
   controllers: [MetricA1cController],
   providers: [MetricA1cService,MetricA1cRepository],
+  exports:[MetricA1cRepository]
 })
 export class MetricA1cModule {}

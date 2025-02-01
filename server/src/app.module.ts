@@ -10,6 +10,7 @@ import { MetricBloodPressureModule } from './metric_blood_pressure/metric_blood_
 import { MetricBloodPressure } from './metric_blood_pressure/entities/metric_blood_pressure.entity';
 import { ConfigModule } from '@nestjs/config';
 import { RedisService } from './config/redis.provider';
+import { CsvProcessingModule } from './csv-processing/csv-processing.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,7 +29,8 @@ import { RedisService } from './config/redis.provider';
       database: process.env.PG_DATABASE,
       synchronize: true,
       logging: false,
-    })
+    }),
+    CsvProcessingModule
   ],
   controllers: [AppController],
   providers: [AppService,RedisService],

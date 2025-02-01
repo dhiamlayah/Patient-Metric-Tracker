@@ -9,5 +9,6 @@ import { MetricBloodPressureRepository } from './metric_blood_pressure.repositor
   imports:[TypeOrmModule.forFeature([MetricBloodPressure])],
   controllers: [MetricBloodPressureController],
   providers: [MetricBloodPressureService,MetricBloodPressureRepository],
+  exports:[MetricBloodPressureRepository]
 })
 export class MetricBloodPressureModule { }
