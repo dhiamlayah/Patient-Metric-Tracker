@@ -9,6 +9,7 @@ import { MetricA1c } from './metric-a1c/entities/metric-a1c.entity';
 import { MetricBloodPressureModule } from './metric_blood_pressure/metric_blood_pressure.module';
 import { MetricBloodPressure } from './metric_blood_pressure/entities/metric_blood_pressure.entity';
 import { ConfigModule } from '@nestjs/config';
+import { RedisService } from './config/redis.provider';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -26,10 +27,10 @@ import { ConfigModule } from '@nestjs/config';
       entities: [Patient, MetricA1c,MetricBloodPressure],
       database: process.env.PG_DATABASE,
       synchronize: true,
-      logging: true,
+      logging: false,
     })
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,RedisService],
 })
 export class AppModule {}

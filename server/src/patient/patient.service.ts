@@ -29,4 +29,5 @@ export class PatientService {
         throw new NotFoundException('Patient Not Found')}
       return patient
    }
+   
 }

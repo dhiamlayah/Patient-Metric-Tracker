@@ -11,7 +11,6 @@ export class MetricA1cController {
     return this.metricA1cService.create(createMetricA1cDto);
   }
 
-
   @Get(':id')
   findOne(@Param('id') id: string,@Query('skip') skip?: number) {
     return this.metricA1cService.findOne(+id,skip);

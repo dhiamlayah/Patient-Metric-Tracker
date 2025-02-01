@@ -12,8 +12,8 @@ export class PatientController {
   }
 
   @Get()
-  findAll(@Query('startFrom') startFrom?:number) {
-    return this.patientService.findAll(startFrom);
+  findAll(@Query('skip') skip?:number) {
+    return this.patientService.findAll(skip);
   }
 
   @Get(':id')

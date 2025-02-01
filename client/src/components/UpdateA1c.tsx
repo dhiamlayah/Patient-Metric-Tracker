@@ -36,7 +36,7 @@ function UpdateA1c({ showA1c, setRerender }: Props) {
             setSuccessMessage(null);
             setErrorMessage(null);
             handleClose(); //after 3s close the box
-          }, 3000);
+          }, 1500);
         });
       } else {
         throw new Error("Invalid Input !!!!");
