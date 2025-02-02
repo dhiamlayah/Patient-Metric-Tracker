@@ -9,8 +9,8 @@ import { MetricA1c } from './metric-a1c/entities/metric-a1c.entity';
 import { MetricBloodPressureModule } from './metric_blood_pressure/metric_blood_pressure.module';
 import { MetricBloodPressure } from './metric_blood_pressure/entities/metric_blood_pressure.entity';
 import { ConfigModule } from '@nestjs/config';
-import { RedisService } from './config/redis.provider';
 import { CsvProcessingModule } from './csv-processing/csv-processing.module';
+import { BullModule } from '@nestjs/bullmq';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,6 +19,12 @@ import { CsvProcessingModule } from './csv-processing/csv-processing.module';
     MetricA1cModule,
     PatientModule,
     MetricBloodPressureModule,
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379
+      }
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.PG_HOST,
@@ -33,6 +39,6 @@ import { CsvProcessingModule } from './csv-processing/csv-processing.module';
     CsvProcessingModule
   ],
   controllers: [AppController],
-  providers: [AppService,RedisService],
+  providers: [AppService],
 })
 export class AppModule {}

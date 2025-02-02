@@ -1,4 +1,4 @@
-import { RedisService } from './../config/redis.provider';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Queue } from 'bullmq';
 import * as csvParser from 'csv-parser';
@@ -6,11 +6,10 @@ import * as fs from 'fs';
 
 @Injectable()
 export class CsvProcessingService {
-  private readonly csvQueue: Queue;
 
-  constructor(private readonly redisService: RedisService) {
-    this.csvQueue = this.redisService.getQueue('csvProcessingQueue');
-  }
+  constructor(
+    @InjectQueue('csvProcessingQueue') private readonly csvQueue: Queue,
+  ) {}
 
   async processCsv(filePath: string) {
     const stream = fs.createReadStream(filePath);
