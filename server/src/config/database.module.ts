@@ -20,8 +20,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
                 database: configService.get<string>('env.pgDatabase'),
                 entities: [Patient, MetricA1c, MetricBloodPressure],
                 synchronize: true,
-                logging: true,
-              }
+                logging: false,
+              } 
         )
     }),
   ],

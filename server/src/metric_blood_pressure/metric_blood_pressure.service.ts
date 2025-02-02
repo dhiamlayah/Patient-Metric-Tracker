@@ -58,4 +58,8 @@ export class MetricBloodPressureService {
       'metric blood pressure, Not Found check patient exist',
     );
   }
+
+  async createMany(createMetricBloodPressureDto:CreateMetricBloodPressureDto[]){
+      return this.repo.createMany(createMetricBloodPressureDto)
+    }
 }

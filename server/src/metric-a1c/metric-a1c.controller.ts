@@ -10,6 +10,10 @@ export class MetricA1cController {
   create(@Body() createMetricA1cDto: CreateMetricA1cDto) {
     return this.metricA1cService.create(createMetricA1cDto);
   }
+  @Post('many')
+  createMany(@Body() createMetricA1cDto: CreateMetricA1cDto[]) {
+    return this.metricA1cService.createMany(createMetricA1cDto);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string,@Query('skip') skip?: number) {
@@ -26,4 +30,6 @@ export class MetricA1cController {
   remove(@Param('id') id: string , @Body() body:{recorded_at:Date}) {
     return this.metricA1cService.remove(+id,body.recorded_at);
   }
+
+
 }

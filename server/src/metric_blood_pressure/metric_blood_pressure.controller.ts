@@ -10,7 +10,10 @@ export class MetricBloodPressureController {
   create(@Body() createMetricBloodPressureDto: CreateMetricBloodPressureDto) {
     return this.metricBloodPressureService.create(createMetricBloodPressureDto);
   }
-
+  @Post('many')
+  createMany(@Body() createMetricA1cDto: CreateMetricBloodPressureDto[]) {
+    return this.metricBloodPressureService.createMany(createMetricA1cDto);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string,@Query('skip') skip?: number) {

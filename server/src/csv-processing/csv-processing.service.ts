@@ -7,7 +7,7 @@ import * as fs from 'fs';
 @Injectable()
 export class CsvProcessingService {
   static countRows = 0;
-
+  static csvColumnNames : string ;
   constructor(
     @InjectQueue('csvProcessingQueue') private readonly csvQueue: Queue,
   ) {}
@@ -17,8 +17,8 @@ export class CsvProcessingService {
     stream
       .pipe(csvParser())
       .once('data', async (row) => {
-        const job = await this.csvQueue.add('processRow', Object.keys(row)[0]);
-        CsvProcessingService.countRows++;
+        console.log('row',row)
+        CsvProcessingService.csvColumnNames = Object.keys(row)[0]
       })
       .on('data', async (row) => {
         if (Object.values(row)[0] !== ';;;;') {
