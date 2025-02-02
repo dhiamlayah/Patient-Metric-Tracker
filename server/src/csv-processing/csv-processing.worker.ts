@@ -1,76 +1,37 @@
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Job} from 'bullmq'; 
+import { Job } from 'bullmq';
 import { MetricA1cRepository } from 'src/metric-a1c/metric-a1c-repository';
 import { MetricBloodPressureRepository } from 'src/metric_blood_pressure/metric_blood_pressure.repository';
+import { CsvProcessingService } from './csv-processing.service';
 
 @Processor('csvProcessingQueue')
 export class CsvProcessingWorker extends WorkerHost {
+  private nbrRows: number;      // this help us to know how mush rows added to the queue from the csv file
+  private batchingCount = 0;    // this help us to batching the data
+  private batchArray = Array();
+
   async process(job: Job<any, any, string>): Promise<any> {
-      console.log('test')
+    console.log(`Processing job ${job.id} of type ${job.name} with data ${job.processedOn}`);
+    this.nbrRows = CsvProcessingService.countRows;
+    this.batchingCount++;
+    this.batchArray.push(job.data);
+    if (this.batchArray.length === 50) {
+      // console.log('batch from array :',this.batchArray)
+      console.log('batch from array length :', this.batchArray.length);
+      this.batchArray = []; 
+    }
   }
 
-  @OnWorkerEvent('completed') 
-  onCompleted() {
-    console.log('test completed')
+  @OnWorkerEvent('completed')
+  async onCompleted(job) {
+    await job.remove();
+  }
+
+  @OnWorkerEvent('drained')
+  drained() {
+    if (this.batchArray.length!==0 && this.batchingCount === this.nbrRows) {
+      console.log('rest of batch length :', this.batchArray.length);
+      this.batchArray = [];
+    }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export class CsvProcessingWorker {
-//   private worker: Worker;
-
-//   constructor(
-//     private readonly redisService: RedisService , 
-//     private mertricA1cRepo: MetricA1cRepository , 
-//     private mertricBPRepo : MetricBloodPressureRepository
-// ) {
-//     this.worker = this.redisService.getWorker('csvProcessingQueue', 
-//         async (job: Job) => {
-//             // console.log(
-//             //   `Processing job ${job.id} of type ${job.name} with data ${JSON.stringify(job.data)}...`
-//             // );
-//             await this.insertMetricA1c(job)
-//             return { success: true, data: job.data };
-//           }
-//     );
-
-//     this.worker.on('completed', async (job: Job, result: any) => {
-//     //   console.log(`Job ${job.id} has been completed successfully with result:`, result);
-//       await job.remove();
-//     //   console.log(`Job ${job.id} removed after completion.`);
-    
-//     });
-
-//     this.worker.on('failed', (job: Job, error: Error) => {
-//       console.error(`Job ${job.id} failed with error:`, error.message);
-//     });
-//   }
-
-
-//   private async insertMetricA1c (job : any ){
-//     const jobData = job.data;
-//     const rawData = jobData['Patient ID;A1C Level;Blood Pressure (systolic);Blood Pressure (diastolic);Diagnosis Date'];
-//     // Split the string by semicolon to get the individual data
-//     const [patientId, a1cLevel, systolicBp, diastolicBp, diagnosisDate] = rawData.split(';');
-//     console.log('patientId',patientId)
-//     console.log('a1cLevel',a1cLevel)
-//     console.log('systolicBp',systolicBp)
-//     console.log('diastolicBp',diastolicBp)
-//     console.log('diagnosisDate',diagnosisDate)
-
-// }
-// }

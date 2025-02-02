@@ -6,6 +6,7 @@ import * as fs from 'fs';
 
 @Injectable()
 export class CsvProcessingService {
+  static countRows = 0;
 
   constructor(
     @InjectQueue('csvProcessingQueue') private readonly csvQueue: Queue,
@@ -15,13 +16,22 @@ export class CsvProcessingService {
     const stream = fs.createReadStream(filePath);
     stream
       .pipe(csvParser())
+      .once('data', async (row) => {
+        const job = await this.csvQueue.add('processRow', Object.keys(row)[0]);
+        CsvProcessingService.countRows++;
+      })
       .on('data', async (row) => {
-        const job = await this.csvQueue.add('processRow', row);
-        console.log(`Job added with ID: ${job.id}`);
+        if (Object.values(row)[0] !== ';;;;') {
+          const job = await this.csvQueue.add(
+            'processRow',
+            Object.values(row)[0],
+          );
+          CsvProcessingService.countRows++;
+        }
       })
       .on('end', () => {
         fs.unlinkSync(filePath);
-        console.log('completed');
+        console.log('processing the CSV file Completed ');
       })
       .on('error', (error) => {
         console.error('Error processing the CSV file:', error);
