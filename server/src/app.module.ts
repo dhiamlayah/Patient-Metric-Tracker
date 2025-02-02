@@ -11,34 +11,23 @@ import { MetricBloodPressure } from './metric_blood_pressure/entities/metric_blo
 import { ConfigModule } from '@nestjs/config';
 import { CsvProcessingModule } from './csv-processing/csv-processing.module';
 import { BullModule } from '@nestjs/bullmq';
+import { DatabaseModule } from './config/database.module';
+import { RedisModule } from './config/redis.module';
+import envConfig from './config/env.config';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, 
+      load: [envConfig],
     }),
     MetricA1cModule,
     PatientModule,
     MetricBloodPressureModule,
-    BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: 6379
-      }
-    }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.PG_HOST,
-      port: process.env.PG_PORT ? parseInt(process.env.PG_PORT) : 5432,
-      password:process.env.PG_PASSWORD,
-      username:process.env.PG_USER,
-      entities: [Patient, MetricA1c,MetricBloodPressure],
-      database: process.env.PG_DATABASE,
-      synchronize: true,
-      logging: false,
-    }),
+    RedisModule,
+    DatabaseModule,
     CsvProcessingModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {} 
