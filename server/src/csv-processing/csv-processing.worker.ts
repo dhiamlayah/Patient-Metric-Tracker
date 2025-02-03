@@ -107,7 +107,5 @@ export class CsvProcessingWorker extends WorkerHost {
 
 
 
-  // async insertBpRowToDb() {
-  //   return await this.repoBp.createMany(this.batchBpArray)
-  // }
+
 }

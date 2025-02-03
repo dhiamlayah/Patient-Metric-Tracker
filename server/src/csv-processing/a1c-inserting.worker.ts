@@ -13,12 +13,12 @@ export class A1cInsertingWorker extends WorkerHost {
     const { success, message } = await this.insertA1cRowsToDb(job.data);
     if(success && job.attemptsMade === 1){
         throw new Error(
-            `Failed To Add A1c rows  ${job.id}  last try`,
+            ` ⚠️ Failed To Add A1c rows  ${job.id}  last try`,
           );
     }
     if (success) {
       throw new Error(
-        `Failed To Add A1c rows  ${job.id}   first try`,
+        ` ⚠️ Failed To Add A1c rows  ${job.id}   first try`,
       );
     }
   }

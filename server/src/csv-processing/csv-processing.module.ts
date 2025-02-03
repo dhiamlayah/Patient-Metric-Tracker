@@ -7,6 +7,7 @@ import { MetricA1cModule } from 'src/metric-a1c/metric-a1c.module';
 import { MetricBloodPressureModule } from 'src/metric_blood_pressure/metric_blood_pressure.module';
 import { BullModule } from '@nestjs/bullmq';
 import { A1cInsertingWorker } from './a1c-inserting.worker';
+import { BloodPressureInsertingWorker } from './blood_pressure-inserting.worker';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { A1cInsertingWorker } from './a1c-inserting.worker';
     MetricA1cModule,
     MetricBloodPressureModule,
   ],
-  providers: [CsvProcessingService, CsvProcessingWorker,A1cInsertingWorker],
+  providers: [CsvProcessingService, CsvProcessingWorker,A1cInsertingWorker,BloodPressureInsertingWorker],
   controllers: [CsvProcessingController],
 })
 export class CsvProcessingModule {}
