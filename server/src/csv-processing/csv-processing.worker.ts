@@ -1,7 +1,10 @@
-import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Job } from 'bullmq';
-import { MetricA1cRepository } from 'src/metric-a1c/metric-a1c-repository';
-import { MetricBloodPressureRepository } from 'src/metric_blood_pressure/metric_blood_pressure.repository';
+import {
+  InjectQueue,
+  OnWorkerEvent,
+  Processor,
+  WorkerHost,
+} from '@nestjs/bullmq';
+import { Job, Queue } from 'bullmq';
 import { CsvProcessingService } from './csv-processing.service';
 
 @Processor('csvProcessingQueue')
@@ -9,11 +12,11 @@ export class CsvProcessingWorker extends WorkerHost {
   private batchingCount = 0; // this help us to batching the data
   private batchA1cArray = Array();
   private batchBpArray = Array();
-  private batchingSize = 50 ;
+  private batchingSize = 50;
 
   constructor(
-    private repoA1c: MetricA1cRepository,
-    private repoBp: MetricBloodPressureRepository,
+    @InjectQueue('a1cInsertingQueue') private readonly a1cvQueue: Queue,
+    @InjectQueue('bpInsertingQueue') private readonly bpQueue: Queue,
   ) {
     super();
   }
@@ -23,14 +26,20 @@ export class CsvProcessingWorker extends WorkerHost {
     this.extractRowFromJob(job.data);
     this.batchingCount++;
     if (this.batchA1cArray.length === this.batchingSize) {
-      const {success , message}  = await this.insertA1cRowToDb()
-      console.log(`batch A1C ${Math.ceil(this.batchingCount / this.batchingSize)} : success=${success} ; message=${message}`)
-      this.batchA1cArray = []
+      console.log(`batched a1c Stored In a1cQueue successuly`);
+      await this.a1cvQueue.add('a1cBatchedRows', this.batchA1cArray, {
+        attempts: 2,
+        backoff: 500,
+      });
+      this.batchA1cArray = [];
     }
     if (this.batchBpArray.length === this.batchingSize) {
-      const {success , message}  = await this.insertBpRowToDb()
-      console.log(`batch Bp ${Math.ceil(this.batchingCount / this.batchingSize)} : success=${success} ; message=${message}`)
-      this.batchBpArray = []
+      console.log(`batched Bp Stored In bpQueue successuly`);
+      await this.bpQueue.add('bpBatchedRows', this.batchBpArray, {
+        attempts: 2,
+        backoff: 500,
+      });
+      this.batchBpArray = [];
     }
   }
 
@@ -41,18 +50,24 @@ export class CsvProcessingWorker extends WorkerHost {
 
   @OnWorkerEvent('drained')
   async drained() {
-    let nbrRows = CsvProcessingService.countRows; // checl if still jobs not inserted to the databse 
+    let nbrRows = CsvProcessingService.countRows; // checl if still jobs not inserted to the databse
     if (this.batchA1cArray.length !== 0 && this.batchingCount === nbrRows) {
-      const {success , message}  = await this.insertA1cRowToDb()
-      console.log(`batch A1C ${Math.ceil(this.batchingCount / this.batchingSize)} : success=${success} ; message=${message}`)
-      this.batchA1cArray=[]
+      console.log(`last batched a1c Stored In a1cQueue successuly`);
+      await this.a1cvQueue.add('a1cBatchedRows', this.batchA1cArray, {
+        attempts: 2,
+        backoff: 500,
+      });
+      this.batchA1cArray = [];
     }
     if (this.batchBpArray.length !== 0 && this.batchingCount === nbrRows) {
-      const {success , message}  = await this.insertBpRowToDb()
-      console.log(`batch Bp ${Math.ceil(this.batchingCount / this.batchingSize)} : success=${success} ; message=${message}`)
-      this.batchBpArray = []
+      console.log(`last batched Bp Stored In bpQueue successuly`);
+      await this.bpQueue.add('bpBatchedRows', this.batchBpArray, {
+        attempts: 2,
+        backoff: 500,
+      });
+      this.batchBpArray = [];
     }
-    console.log('worker complete ')
+    console.log('worker complete ');
   }
 
   extractRowFromJob(jobData: string) {
@@ -90,11 +105,9 @@ export class CsvProcessingWorker extends WorkerHost {
     }
   }
 
-  async insertA1cRowToDb(){
-    return await this.repoA1c.createMany(this.batchA1cArray)
-  }
 
-  async insertBpRowToDb() {
-    return await this.repoBp.createMany(this.batchBpArray)
-  }
+
+  // async insertBpRowToDb() {
+  //   return await this.repoBp.createMany(this.batchBpArray)
+  // }
 }

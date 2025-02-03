@@ -6,19 +6,28 @@ import { CsvProcessingWorker } from './csv-processing.worker';
 import { MetricA1cModule } from 'src/metric-a1c/metric-a1c.module';
 import { MetricBloodPressureModule } from 'src/metric_blood_pressure/metric_blood_pressure.module';
 import { BullModule } from '@nestjs/bullmq';
+import { A1cInsertingWorker } from './a1c-inserting.worker';
 
 @Module({
   imports: [
-    BullModule.registerQueue({
-      name: 'csvProcessingQueue',
-    }),
+    BullModule.registerQueue(
+      {
+        name: 'csvProcessingQueue',
+      },
+      {
+        name: 'bpInsertingQueue',
+      },
+      {
+        name: 'a1cInsertingQueue'
+      },
+    ),
     MulterModule.register({
       dest: './uploads',
     }),
     MetricA1cModule,
     MetricBloodPressureModule,
   ],
-  providers: [CsvProcessingService,CsvProcessingWorker],
+  providers: [CsvProcessingService, CsvProcessingWorker,A1cInsertingWorker],
   controllers: [CsvProcessingController],
 })
 export class CsvProcessingModule {}
