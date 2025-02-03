@@ -9,6 +9,7 @@ export class CsvProcessingWorker extends WorkerHost {
   private batchingCount = 0; // this help us to batching the data
   private batchA1cArray = Array();
   private batchBpArray = Array();
+  private batchingSize = 50 ;
 
   constructor(
     private repoA1c: MetricA1cRepository,
@@ -21,13 +22,15 @@ export class CsvProcessingWorker extends WorkerHost {
     // console.log(`Processing job ${job.id} of type ${job.name} with data ${this.batchingCount}`);
     this.extractRowFromJob(job.data);
     this.batchingCount++;
-    if (this.batchA1cArray.length === 50) {
+    if (this.batchA1cArray.length === this.batchingSize) {
       const {success , message}  = await this.insertA1cRowToDb()
-      console.log(`batch A1C ${Math.ceil(this.batchingCount / 50)} : success=${success} ; message=${message}`)
+      console.log(`batch A1C ${Math.ceil(this.batchingCount / this.batchingSize)} : success=${success} ; message=${message}`)
+      this.batchA1cArray = []
     }
-    if (this.batchBpArray.length === 50) {
+    if (this.batchBpArray.length === this.batchingSize) {
       const {success , message}  = await this.insertBpRowToDb()
-      console.log(`batch Bp ${Math.ceil(this.batchingCount / 50)} : success=${success} ; message=${message}`)
+      console.log(`batch Bp ${Math.ceil(this.batchingCount / this.batchingSize)} : success=${success} ; message=${message}`)
+      this.batchBpArray = []
     }
   }
 
@@ -38,16 +41,17 @@ export class CsvProcessingWorker extends WorkerHost {
 
   @OnWorkerEvent('drained')
   async drained() {
-    let nbrRows = CsvProcessingService.countRows;
+    let nbrRows = CsvProcessingService.countRows; // checl if still jobs not inserted to the databse 
     if (this.batchA1cArray.length !== 0 && this.batchingCount === nbrRows) {
       const {success , message}  = await this.insertA1cRowToDb()
-      console.log(`batch A1C ${Math.ceil(this.batchingCount / 50)} : success=${success} ; message=${message}`)
+      console.log(`batch A1C ${Math.ceil(this.batchingCount / this.batchingSize)} : success=${success} ; message=${message}`)
+      this.batchA1cArray=[]
     }
     if (this.batchBpArray.length !== 0 && this.batchingCount === nbrRows) {
       const {success , message}  = await this.insertBpRowToDb()
-      console.log(`batch Bp ${Math.ceil(this.batchingCount / 50)} : success=${success} ; message=${message}`)
+      console.log(`batch Bp ${Math.ceil(this.batchingCount / this.batchingSize)} : success=${success} ; message=${message}`)
+      this.batchBpArray = []
     }
-
     console.log('worker complete ')
   }
 
