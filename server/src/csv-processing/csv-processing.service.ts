@@ -17,7 +17,6 @@ export class CsvProcessingService {
     stream
       .pipe(csvParser())
       .once('data', async (row) => {
-        console.log('row',row)
         CsvProcessingService.csvColumnNames = Object.keys(row)[0]
       })
       .on('data', async (row) => {
@@ -25,6 +24,9 @@ export class CsvProcessingService {
           const job = await this.csvQueue.add(
             'processRow',
             Object.values(row)[0],
+            { attempts : 3 ,   
+              backoff : 500
+            }
           );
           CsvProcessingService.countRows++;
         }
