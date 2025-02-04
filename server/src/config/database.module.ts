@@ -21,6 +21,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
                 entities: [Patient, MetricA1c, MetricBloodPressure],
                 synchronize: true,
                 logging: false,
+                extra: {
+                  max: 1000, // Set the maximum number of connections in the pool
+                },
               } 
         )
     }),

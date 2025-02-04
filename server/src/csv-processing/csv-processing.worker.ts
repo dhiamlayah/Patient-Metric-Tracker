@@ -6,15 +6,15 @@ import {
 } from '@nestjs/bullmq';
 import { Job, Queue } from 'bullmq';
 import { CsvProcessingService } from './csv-processing.service';
-
-@Processor('csvProcessingQueue')
+ 
+@Processor('csvProcessingQueue') 
 export class CsvProcessingWorker extends WorkerHost {
   private batchingCount = 1; // this help us to batching the data 
   private batchA1c = { rows: Array(), startFrom: 0, endAt: 0 };
   private batchBp = { rows: Array(), startFrom: 0, endAt: 0 };
   private batchingSize = 10;
   
-  constructor(
+  constructor( 
     @InjectQueue('a1cInsertingQueue') private readonly a1cvQueue: Queue,
     @InjectQueue('bpInsertingQueue') private readonly bpQueue:  Queue,
   ) {    

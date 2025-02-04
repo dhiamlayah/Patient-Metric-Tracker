@@ -14,6 +14,7 @@ import { BloodPressureInsertingWorker } from './blood_pressure-inserting.worker'
     BullModule.registerQueue(
       {
         name: 'csvProcessingQueue',
+        
       },
       {
         name: 'bpInsertingQueue',
