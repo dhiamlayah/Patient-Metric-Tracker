@@ -6,40 +6,46 @@ import { MetricA1cRepository } from 'src/metric-a1c/metric-a1c-repository';
 @Processor('a1cInsertingQueue')
 export class A1cInsertingWorker extends WorkerHost {
   constructor(private repoA1c: MetricA1cRepository) {
-    super();
-  }
+    super();  
+  }   
 
-  async process(job: Job<any, any, string>): Promise<any> {
-    const { success, message } = await this.insertA1cRowsToDb(job.data);
-    if(success && job.attemptsMade === 1){
+  async process(job: Job<any, any, string>):  Promise<any> {
+    const { success, message } = await this.insertA1cRowsToDb(job.data.rows);
+    if(!success && job.attemptsMade === 1){
         throw new Error(
-            ` ⚠️ Failed To Add A1c rows  ${job.id}  last try`,
+            ` ❌ Failed To Add A1c rows  from ${job.data.startFrom}  to ${job.data.endAt}  last try`,
           );
     }
-    if (success) {
+    if (!success) { 
       throw new Error(
-        ` ⚠️ Failed To Add A1c rows  ${job.id}   first try`,
-      );
+        ` ❌ Failed To Add A1c rows  from ${job.data.startFrom}  to ${job.data.endAt}   first try`,
+      ); 
     }
-  }
-
-  @OnWorkerEvent('failed')
-  onFailed(job, err) {
+  } 
+  @OnWorkerEvent('stalled')
+  onStalled(){
+    console.log("stalled")
+  }   
+  @OnWorkerEvent('drained')
+  onDrained(){
+    console.log("drained")
+  }            
+  @OnWorkerEvent('failed') 
+  async onFailed(job, err) {
     console.log(err.message);
-  }
+    if(job.attemptsMade===2){
+      await job.remove();
+    }
+  } 
 
-  @OnWorkerEvent('completed')
+  @OnWorkerEvent('completed') 
   async onCompleted(job) {
     console.log(
-      `A1c rows ${job.id}  added successfuly`,
+      `✅ A1c ==> rows from ${job.data.startFrom}  to ${job.data.endAt}  added successfuly`,
     );
     await job.remove();
   }
-
-  @OnWorkerEvent("drained")
-  onDrained(){
-    console.log('A1C Worker Complete')
-  }
+ 
 
   async insertA1cRowsToDb(jobData: CreateMetricA1cDto[]) {
     return await this.repoA1c.createMany(jobData);

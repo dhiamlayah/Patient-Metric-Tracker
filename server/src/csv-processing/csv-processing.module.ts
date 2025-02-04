@@ -27,7 +27,7 @@ import { BloodPressureInsertingWorker } from './blood_pressure-inserting.worker'
     }),
     MetricA1cModule,
     MetricBloodPressureModule,
-  ],
+  ], 
   providers: [CsvProcessingService, CsvProcessingWorker,A1cInsertingWorker,BloodPressureInsertingWorker],
   controllers: [CsvProcessingController],
 })
