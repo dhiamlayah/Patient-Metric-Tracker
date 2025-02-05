@@ -3,7 +3,7 @@ import { Job, Queue } from 'bullmq';
 import { CreateMetricA1cDto } from 'src/metric-a1c/dto/create-metric-a1c.dto';
 import { MetricA1cRepository } from 'src/metric-a1c/metric-a1c-repository';
 
-@Processor('a1cInsertingQueue',{concurrency:5})
+@Processor('a1cInsertingQueue',{concurrency:5, limiter:{max:50 ,duration :1000}})
 export class A1cInsertingWorker extends WorkerHost {
   constructor(private repoA1c: MetricA1cRepository) {
     super();  
@@ -14,8 +14,8 @@ export class A1cInsertingWorker extends WorkerHost {
     if(!success && job.attemptsMade === 1){
         throw new Error(
             ` ❌ Failed To Add A1c rows  from ${job.data.startFrom}  to ${job.data.endAt}  last try`,
-          );
-    }
+          ); 
+    } 
     if (!success) { 
       throw new Error(
         ` ❌ Failed To Add A1c rows  from ${job.data.startFrom}  to ${job.data.endAt}   first try`,
@@ -24,15 +24,10 @@ export class A1cInsertingWorker extends WorkerHost {
   } 
   @OnWorkerEvent('stalled')
   onStalled(job: Job) {
-    console.log(`Job with ID ${job.id} stalled`);
+    console.log(`Job with rows from ${job.data.startFrom}  to ${job.data.endAt}  stalled`);
   }
 
-
-  @OnWorkerEvent('progress')
-  onProgress(){    
-    console.log("progress")
-  }      
-       
+        
   @OnWorkerEvent('failed') 
   async onFailed(job, err) {
     console.log(err.message);

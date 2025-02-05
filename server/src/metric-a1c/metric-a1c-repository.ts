@@ -33,6 +33,8 @@ export class MetricA1cRepository extends Repository<MetricA1c> {
       }catch(error:any){
       await queryRunner.rollbackTransaction();
       return { success: false, message: `error from inserting rows in metric_A1C :${error.message}`};
+    }finally{
+      await queryRunner.release()
     }
   }
 }

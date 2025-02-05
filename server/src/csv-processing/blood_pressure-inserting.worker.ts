@@ -3,10 +3,10 @@ import { Job } from 'bullmq';
 import { CreateMetricBloodPressureDto } from 'src/metric_blood_pressure/dto/create-metric_blood_pressure.dto';
 import { MetricBloodPressureRepository } from 'src/metric_blood_pressure/metric_blood_pressure.repository';
 
-@Processor('bpInsertingQueue',{concurrency:5})
+@Processor('bpInsertingQueue',{concurrency:5, limiter:{max:50 ,duration :1000}} )
 export class BloodPressureInsertingWorker extends WorkerHost {
   constructor(private repoBp: MetricBloodPressureRepository) {
-    super();
+    super(); 
   }
 
   async process(job: Job<any, any, string>): Promise<any> {
@@ -23,6 +23,12 @@ export class BloodPressureInsertingWorker extends WorkerHost {
     }  
    
   }  
+
+
+  @OnWorkerEvent('stalled')
+  onStalled(job: Job) {
+    console.log(`Job with rows from ${job.data}  stalled`);
+  }
 
   @OnWorkerEvent('failed')
  async onFailed(job, err) {

@@ -37,6 +37,8 @@ export class MetricBloodPressureRepository extends Repository<MetricBloodPressur
         success: false ,
         message: `error from inserting rows in metric_blood_pressure  :${error.message}`,
       };
+    }finally{
+      await queryRunner.release()
     }
   }
 }

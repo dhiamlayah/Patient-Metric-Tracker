@@ -12,7 +12,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         inject:[ConfigService],
         useFactory:(configService:ConfigService)=>(
             {
-                type: 'postgres',
+                type: 'postgres', 
                 host: configService.get<string>('env.pgHost'),
                 port: configService.get<number>('env.pgPort'),
                 username: configService.get<string>('env.pgUser'),
@@ -22,10 +22,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
                 synchronize: true,
                 logging: false,
                 extra: {
-                  max: 1000, // Set the maximum number of connections in the pool
-                },
-              } 
-        )
+                  max: 100 ,
+                  min:2,  
+                  idleTimeoutMillis: 3000,
+                }, 
+              }       
+        ) 
     }),
   ],
 })
