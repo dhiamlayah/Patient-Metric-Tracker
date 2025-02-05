@@ -9,7 +9,7 @@ import { CsvProcessingService } from './csv-processing.service';
 
 @Processor('csvProcessingQueue')
 export class CsvProcessingWorker extends WorkerHost {
-  private batchingCount = 1; // this help us to batching the data
+  private jobNbr = 1; // this help us to batching rows
   private batchA1c = { rows: Array(), startFrom: 0, endAt: 0 };
   private batchBp = { rows: Array(), startFrom: 0, endAt: 0 };
   private batchingSize = 50;
@@ -23,11 +23,14 @@ export class CsvProcessingWorker extends WorkerHost {
 
   async process(job: Job<any, any, string>): Promise<any> {
     this.extractRowFromJob(job.data);
-    this.batchingCount++;
-    // console.log('worker ',job.data.rowIndex)
+    this.jobNbr++;
     if (this.batchA1c.rows.length === this.batchingSize) {
-      await this.a1cvQueue.add('a1cBatchedRows', this.batchA1c);
-      this.batchA1c = { rows: [], endAt: 0, startFrom: 0 }; // initialize batcher
+      await this.a1cvQueue.add('a1cBatchedRows', this.batchA1c, {
+        attempts: 2,
+        backoff: 500,
+        removeOnComplete: true,
+      });
+      this.batchA1c = { rows: [], endAt: 0, startFrom: 0 };  // initialize batched rows
     }
     if (this.batchBp.rows.length === this.batchingSize) {
       await this.bpQueue.add('bpBatchedRows', this.batchBp, {
@@ -35,7 +38,7 @@ export class CsvProcessingWorker extends WorkerHost {
         backoff: 500,
         removeOnComplete: true,
       });
-      this.batchBp = { rows: [], endAt: 0, startFrom: 0 }; // initialize batcher
+      this.batchBp = { rows: [], endAt: 0, startFrom: 0 };  // initialize batched rows
     }
   }
 
@@ -46,15 +49,17 @@ export class CsvProcessingWorker extends WorkerHost {
 
   @OnWorkerEvent('drained')
   async drained() {
-    let nbrRows = CsvProcessingService.countRows; // checl if still jobs not inserted to the databse
-    if (this.batchA1c.rows.length !== 0 && this.batchingCount === nbrRows) {
+    let nbrRows = CsvProcessingService.countRows;   // check if still jobs not inserted to the databse
+    
+    if (this.batchA1c.rows.length !== 0 && this.jobNbr === nbrRows) {
       await this.a1cvQueue.add('a1cBatchedRows', this.batchA1c, {
         attempts: 2,
         backoff: 500,
+        removeOnComplete: true,
       });
       this.batchA1c = { rows: [], endAt: 0, startFrom: 0 };
     }
-    if (this.batchBp.rows.length !== 0 && this.batchingCount === nbrRows) {
+    if (this.batchBp.rows.length !== 0 && this.jobNbr === nbrRows) {
       await this.bpQueue.add('bpBatchedRows', this.batchBp, {
         attempts: 2,
         backoff: 500,
@@ -62,7 +67,7 @@ export class CsvProcessingWorker extends WorkerHost {
       });
       this.batchBp = { rows: [], endAt: 0, startFrom: 0 };
     }
-    this.batchingCount = 1;
+    this.jobNbr = 1;
   }
 
   extractRowFromJob(jobData) {
@@ -85,7 +90,7 @@ export class CsvProcessingWorker extends WorkerHost {
   }
 
   insertIntoBatchBp(row, rowIndex) {
-    if (row.every((value) => value !== null && value !== undefined)) {
+    if (row.every((value) => value !== null && value !== undefined && value !=='')) {
       if (this.batchBp.rows.length === 0) {
         this.batchBp.startFrom = rowIndex;
       }
@@ -102,7 +107,7 @@ export class CsvProcessingWorker extends WorkerHost {
   }
 
   insertIntoBatchA1c(row, rowIndex) {
-    if (row.every((value) => value !== null && value !== undefined)) {
+    if (row.every((value) => value !== null && value !== undefined && value !=='')) {
       if (this.batchA1c.rows.length === 0) {
         this.batchA1c.startFrom = rowIndex;
       }
@@ -113,7 +118,7 @@ export class CsvProcessingWorker extends WorkerHost {
       });
       this.batchA1c.endAt = rowIndex;
     } else {
-      console.log(`⚠️ row nbr ${rowIndex} invalid for a1c`);
+      console.log(`⚠️ row nbr ${rowIndex} invalid for a1c ; row :${row}`);
     }
   }
 }

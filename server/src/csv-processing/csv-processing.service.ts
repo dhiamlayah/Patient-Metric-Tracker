@@ -10,6 +10,9 @@ export class CsvProcessingService {
   static csvColumnNames: string;
   constructor(
     @InjectQueue('csvProcessingQueue') private readonly csvQueue: Queue,
+    @InjectQueue('a1cInsertingQueue') private readonly a1cvQueue: Queue,
+    @InjectQueue('bpInsertingQueue') private readonly bpQueue: Queue,
+
   ) {}
 
   async processCsv(filePath: string) {
@@ -21,7 +24,7 @@ export class CsvProcessingService {
         CsvProcessingService.countRows = 1;
       })
       .on('data', async (row) => {
-        if (Object.values(row)[0] !== ';;;;') {
+        if (Object.values(row)[0] !== ';;;;;') {
           CsvProcessingService.countRows++;
           await this.csvQueue.add(
             'processRow',
@@ -42,5 +45,42 @@ export class CsvProcessingService {
         throw new InternalServerErrorException('Error processing the CSV file');
       });
     return 'File uploaded and processing started.';
+  }
+
+  async pauseProcessCsv (){
+    await this.csvQueue.pause()
+    await this.a1cvQueue.pause()
+    await this.bpQueue.pause()
+    return 'Process Paused '
+  }
+
+  async resumeProcessCsv (){
+    await this.csvQueue.resume()
+    await this.a1cvQueue.resume()
+    await this.bpQueue.resume()
+    return 'Process Resumed '
+  }
+
+  async getQueuesState(){
+    return [
+      {
+        queue_name : "csv processing  queue",
+        job_waited :await  this.csvQueue.getWaitingCount() ,
+        job_active : await this.csvQueue.getActiveCount() ,
+        job_failed : await  this.csvQueue.getFailedCount() 
+      },
+      {
+        queue_name : "a1c queue",
+        job_waited :await  this.a1cvQueue.getWaitingCount() ,
+        job_active : await this.a1cvQueue.getActiveCount() ,
+        job_failed : await  this.a1cvQueue.getFailedCount() 
+      },
+      {
+        queue_name : "a1c queue",
+        job_waited :await  this.bpQueue.getWaitingCount() ,
+        job_active : await this.bpQueue.getActiveCount() ,
+        job_failed : await  this.bpQueue.getFailedCount() 
+      }
+    ]
   }
 }

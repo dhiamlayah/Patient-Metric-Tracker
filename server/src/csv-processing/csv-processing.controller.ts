@@ -22,4 +22,18 @@ export class CsvProcessingController {
         return this.csvProcessingService.processCsv(file.path)
     }
 
+    @Post("pause")
+    pauseProcessCsv(){
+        return this.csvProcessingService.pauseProcessCsv()
+    }
+    @Post("resume")
+    resumeProcessCsv(){
+        return this.csvProcessingService.resumeProcessCsv()
+    }
+
+    @Post("state")
+    getProccessState (){
+        return this.csvProcessingService.getQueuesState()
+    }
+
 }

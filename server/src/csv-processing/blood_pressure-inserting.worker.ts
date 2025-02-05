@@ -13,7 +13,7 @@ export class BloodPressureInsertingWorker extends WorkerHost {
     const { success, message } = await this.insertBpRowToDb(job.data.rows);
     if(!success && job.attemptsMade === 1){
         throw new Error(
-            `❌ Failed To Add Blood Pressure rows   from ${job.data.startFrom}  to ${job.data.endAt}  last try`,
+            `❌ Failed To Add Blood Pressure rows   from ${job.data.startFrom}  to ${job.data.endAt}  last try ; reason : ${message}`,
           );
     }
     if (!success) {
@@ -26,14 +26,14 @@ export class BloodPressureInsertingWorker extends WorkerHost {
 
 
   @OnWorkerEvent('stalled')
-  onStalled(job: Job) {
-    console.log(`Job with rows from ${job.data}  stalled`);
+  onStalled(job , prevState) {
+    console.log(`Bp Job  with ID : ${job.data}  stalled , prevState: ${prevState} `);
   }
 
   @OnWorkerEvent('failed')
  async onFailed(job, err) {
     console.log(err.message);
-    if(job.attemptsMade===1){
+    if(job.attemptsMade===2){
       await job.remove();
     }
   }
@@ -46,6 +46,7 @@ export class BloodPressureInsertingWorker extends WorkerHost {
     await job.remove();
   }
    
+
   async insertBpRowToDb(job : CreateMetricBloodPressureDto[]) {
     return await this.repoBp.createMany(job)
   }

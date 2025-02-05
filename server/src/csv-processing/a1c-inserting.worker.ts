@@ -13,7 +13,7 @@ export class A1cInsertingWorker extends WorkerHost {
     const { success, message } = await this.insertA1cRowsToDb(job.data.rows);
     if(!success && job.attemptsMade === 1){
         throw new Error(
-            ` ❌ Failed To Add A1c rows  from ${job.data.startFrom}  to ${job.data.endAt}  last try`,
+            ` ❌ Failed To Add A1c rows  from ${job.data.startFrom}  to ${job.data.endAt}  last try ; reason : ${message}`,
           ); 
     } 
     if (!success) { 
@@ -21,10 +21,11 @@ export class A1cInsertingWorker extends WorkerHost {
         ` ❌ Failed To Add A1c rows  from ${job.data.startFrom}  to ${job.data.endAt}   first try`,
       ); 
     }
-  } 
+  }
+
   @OnWorkerEvent('stalled')
-  onStalled(job: Job) {
-    console.log(`Job with rows from ${job.data.startFrom}  to ${job.data.endAt}  stalled`);
+  onStalled(job , prevState) {
+    console.log(`A1c Job  with ID : ${job.data}  stalled , prevState: ${prevState} `);
   }
 
         
@@ -43,7 +44,7 @@ export class A1cInsertingWorker extends WorkerHost {
     );
     await job.remove();
   }
- 
+
 
   async insertA1cRowsToDb(jobData: CreateMetricA1cDto[]) {
     return await this.repoA1c.createMany(jobData);

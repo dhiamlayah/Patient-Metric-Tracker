@@ -18,20 +18,20 @@ import { BloodPressureInsertingWorker } from './blood_pressure-inserting.worker'
       {
         name: 'bpInsertingQueue',
         defaultJobOptions: {
-          attempts: 3, // Retry up to 3 times
+          attempts: 3, 
           backoff: {
             type: 'fixed',
-            delay: 5000, // Wait 5 seconds before retrying
+            delay: 5000,
           },
         },
       },
       {
         name: 'a1cInsertingQueue',
         defaultJobOptions: {
-          attempts: 3, // Retry up to 3 times
+          attempts: 3, 
           backoff: {
             type: 'fixed',
-            delay: 5000, // Wait 5 seconds before retrying
+            delay: 5000,
           },
         },
       },
