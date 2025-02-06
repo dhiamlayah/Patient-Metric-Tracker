@@ -18,9 +18,9 @@ import envConfig from './config/env.config';
     MetricA1cModule,
     PatientModule,
     MetricBloodPressureModule,
+    CsvProcessingModule,
     RedisModule,
-    DatabaseModule,
-    CsvProcessingModule
+    DatabaseModule
   ],
   controllers: [AppController],
   providers: [AppService],

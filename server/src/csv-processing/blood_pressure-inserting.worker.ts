@@ -6,9 +6,9 @@ import { MetricBloodPressureRepository } from 'src/metric_blood_pressure/metric_
 @Processor('bpInsertingQueue',{concurrency:5, limiter:{max:50 ,duration :1000}} )
 export class BloodPressureInsertingWorker extends WorkerHost {
   constructor(private repoBp: MetricBloodPressureRepository) {
-    super(); 
-  }
-
+    super();   
+  } 
+ 
   async process(job: Job<any, any, string>): Promise<any> {
     const { success, message } = await this.insertBpRowToDb(job.data.rows);
     if(!success && job.attemptsMade === 1){

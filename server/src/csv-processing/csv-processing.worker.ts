@@ -47,9 +47,14 @@ export class CsvProcessingWorker extends WorkerHost {
     await job.remove();
   }
 
+  @OnWorkerEvent('failed')
+  async onFailed(job, err) {
+    console.log(`failed to process this job : ${job.data} ; error : ${err}`)
+  }
+
   @OnWorkerEvent('drained')
   async drained() {
-    let nbrRows = CsvProcessingService.countRows;   // check if still jobs not inserted to the databse
+    let nbrRows = CsvProcessingService.countRows;   // check if still jobs not inserted to the batched arrays 
     
     if (this.batchA1c.rows.length !== 0 && this.jobNbr === nbrRows) {
       await this.a1cvQueue.add('a1cBatchedRows', this.batchA1c, {

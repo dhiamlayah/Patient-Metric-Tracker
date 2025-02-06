@@ -26,6 +26,7 @@ export class MetricBloodPressureRepository extends Repository<MetricBloodPressur
 
   async createMany(rows: CreateMetricBloodPressureDto[]) {
     const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
       await queryRunner.manager.insert(MetricBloodPressure, rows);

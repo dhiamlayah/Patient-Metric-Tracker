@@ -16,7 +16,7 @@ export class CsvProcessingService {
   ) {}
 
   async processCsv(filePath: string) {
-    const stream = fs.createReadStream(filePath);
+    const stream = fs.createReadStream(filePath);      
     stream
       .pipe(csvParser())
       .once('data', async (row) => {
@@ -24,14 +24,14 @@ export class CsvProcessingService {
         CsvProcessingService.countRows = 1;
       })
       .on('data', async (row) => {
-        if (Object.values(row)[0] !== ';;;;;') {
-          CsvProcessingService.countRows++;
+        if (Object.values(row)[0] !== ';;;;;') {          //check row not empty
+          CsvProcessingService.countRows++;               
           await this.csvQueue.add(
             'processRow',
             {
               row: Object.values(row)[0],   
               rowIndex: CsvProcessingService.countRows,
-            }, // we add rowIndew to help us to identify the row and logging it easly
+            },                 // we add rowIndex to help us to identify the row and logging it easly
             { attempts: 2, removeOnComplete: true },
           );
         }
@@ -41,9 +41,10 @@ export class CsvProcessingService {
         console.log('processing the CSV file Completed ');
       })
       .on('error', (error) => {
-        console.error('Error processing the CSV file:', error);
+        console.error('Error processing the CSV file:', error.message);
         throw new InternalServerErrorException('Error processing the CSV file');
       });
+    
     return 'File uploaded and processing started.';
   }
 

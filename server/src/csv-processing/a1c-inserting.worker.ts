@@ -27,8 +27,7 @@ export class A1cInsertingWorker extends WorkerHost {
   onStalled(job , prevState) {
     console.log(`A1c Job  with ID : ${job.data}  stalled , prevState: ${prevState} `);
   }
-
-        
+  
   @OnWorkerEvent('failed') 
   async onFailed(job, err) {
     console.log(err.message);
